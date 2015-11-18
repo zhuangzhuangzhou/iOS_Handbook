@@ -1,4 +1,4 @@
-#define KScreenWidth (CGRectGetWidth([UIScreen mainScreen].bounds)) //屏幕宽度
+﻿#define KScreenWidth (CGRectGetWidth([UIScreen mainScreen].bounds)) //屏幕宽度
 #define KScreenHeight (CGRectGetHeight([UIScreen mainScreen].bounds)) //屏幕高度
 
 
@@ -276,7 +276,7 @@ UIViewContentModeBottomRight
         lable.backgroundColor = [UIColor orangeColor];
     
         //设置文本信息
-        lable.text = @"蓝鸥3g";
+        lable.text = @"哈哈3";
     
         //设置字体大小
         lable.font = [UIFont systemFontOfSize:20.0f];
