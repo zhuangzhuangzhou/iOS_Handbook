@@ -1,11 +1,4 @@
-//
-//  main.m
-//  lx - 22.07
-//
-//  Created by xalo on 15/7/22.
-//  Copyright (c) 2015年 西安蓝欧科技有限公司. All rights reserved.
-//
-
+﻿
 #import <Foundation/Foundation.h>
 
 int main(int argc, const char * argv[]) {
