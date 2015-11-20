@@ -1,4 +1,4 @@
-﻿#define KScreenWidth (CGRectGetWidth([UIScreen mainScreen].bounds)) //屏幕宽度
+#define KScreenWidth (CGRectGetWidth([UIScreen mainScreen].bounds)) //屏幕宽度
 #define KScreenHeight (CGRectGetHeight([UIScreen mainScreen].bounds)) //屏幕高度
 
 
@@ -2337,24 +2337,32 @@ UINavigationController *navi = [[UINavigationController alloc]initWithRootViewCo
 self.window.rootViewController = navi;
 
 
-#pragma mark 导航条 navigationBar
 
+#pragma mark  NavigationBar 导航条
 
+//注意：
+self.navigationController.navigationItem.title = @"d";//这个是错的 赋不上值
 self.navigationItem.title = @"通讯录";
 
 navi.navigationBar.barTintColor = [UIColor blueColor];//导航条表面颜色
 navi.navigationBar.tintColor = [UIColor whiteColor];//依赖导航条的系统样式控件的颜色
 
-//为导航条设置背景图片
-[navi.navigationBar setBackgroundImage:[UIImage imageNamed:@"background.png"] forBarMetrics:UIBarMetricsDefault];
-navi.navigationBar.translucent = YES;//导航条的半透明属性
+//自动布局
+self.automaticallyAdjustsScrollViewInsets = NO;
 
+//导航栏透明
+[self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+
+//去掉导航栏下的线
+self.navigationController.navigationBar.shadowImage = [UIImage new];
+
+//为导航条设置背景图片
 [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"5"] forBarMetrics:UIBarMetricsCompactPrompt];
-self.navigationController.navigationBar.translucent = YES;
+self.navigationController.navigationBar.translucent = YES;//导航条的半透明属性
+
 /***
  共四种样式
- 
- UIBarMetricsCompact 透明(简洁)
+ UIBarMetricsCompact 透明(简洁)   --  设置这个属性 去不掉shadowImage
  UIBarMetricsDefault 默认
  */
 
