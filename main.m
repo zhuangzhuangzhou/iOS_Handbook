@@ -11,15 +11,12 @@ int main(int argc, const char * argv[]) {
 
     //用另一个字符串创建一个新的字符串（适合用于可变字符串）
     NSString *str2 = [NSString stringWithString:str1];
-    NSLog(@"%@",str2);
     
     //读取文本内容为字符串对象
     NSString *str = [NSString stringWithContentsOfFile:@"/Users/xalo/Desktop/text.txt" encoding:NSUTF8StringEncoding error:nil];
-    NSLog(@"%@",str);
     
     //获取字符串长度
     NSInteger length = [str length];
-    NSLog(@"%ld",length);
     
 #pragma mark 根据下标获取字符
     for (int i = 0; i < length; i ++) {

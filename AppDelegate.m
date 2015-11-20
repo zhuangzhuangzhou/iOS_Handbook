@@ -3,8 +3,7 @@
 
 
 #pragma mark UIWindow
-    
-    
+
     /*
      UI的窗口类，用于显示界面，一般由一个应用至少要有一个window
      iOS中的空间都是矩形，决定一个空间的位置以及大小，用结构体CGRect
@@ -14,13 +13,9 @@
      */
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];//建立屏幕（UIScreen）等大的window
-    
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];//让window 显示在屏幕上
-    
-    
-    
-    
+
 #pragma mark- UIView
     
     /*
