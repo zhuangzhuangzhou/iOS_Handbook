@@ -852,7 +852,9 @@ self.view.userInteractionEnabled = YES;
  
  layoutSubviews在以下情况下会被调用：
  
- 1、init初始化不会触发layoutSubviews
+ 1、init初始化不会触发layoutSubviews(但是是用initWithFrame 进行初始化时，当rect的值不为CGRectZero时,也会触发
+ 
+)
  2、addSubview会触发layoutSubviews
  3、设置view的Frame会触发layoutSubviews，当然前提是frame的值设置前后发生了变化
  4、滚动一个UIScrollView会触发layoutSubviews
@@ -1609,15 +1611,18 @@ tableView.tableHeaderView = scrollView;//注意这句
     
 }
 
+//右划删除 多个选项
+- (nullable NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+}
 
-
-#pragma mark 编辑 移动 & 步骤1
+#pragma mark 编辑 移动 & 步骤
 // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
 //下面这行语句是为当前视图控制器提供一个可以控制表视图的编辑状态的按钮，默认响应setEditing:animated:方法
 self.navigationItem.rightBarButtonItem = self.editButtonItem;
 
 
-#pragma mark 编辑 步骤2
+//编辑 步骤2
 //询问代理对象当前这一行是否可以进行编辑
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -1627,7 +1632,7 @@ self.navigationItem.rightBarButtonItem = self.editButtonItem;
     //    }
     return YES;
 }
-#pragma mark 编辑 步骤3
+//编辑 步骤3
 //给进入编辑的这一行指定一个编辑样式
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.row == 0) {
@@ -1637,7 +1642,7 @@ self.navigationItem.rightBarButtonItem = self.editButtonItem;
     }
     return  UITableViewCellEditingStyleInsert | UITableViewCellEditingStyleDelete;
 }
-#pragma mark 编辑 步骤4
+// 编辑 步骤4
 //编辑完成 （先操作数据源，再修改UI）
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -1651,7 +1656,7 @@ self.navigationItem.rightBarButtonItem = self.editButtonItem;
         //实例
         [self.datasource addObject:@"新添加的含猪"];
         [tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
-#pragma mark 重载数据（刷新界面）
+// 重载数据（刷新界面）
         //reloadData方法时用于刷新数据，保证UI界面与数据源中的数据保持一致
         [tableView performSelector:@selector(reloadData) withObject:nil afterDelay:0.5];
         [tableView reloadData];
@@ -1660,7 +1665,7 @@ self.navigationItem.rightBarButtonItem = self.editButtonItem;
 
 
 
-#pragma mark 移动 步骤2
+// 移动 步骤2
 // Override to support conditional rearranging of the table view.
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the item to be re-orderable.
@@ -1668,7 +1673,7 @@ self.navigationItem.rightBarButtonItem = self.editButtonItem;
     return YES;
 }
 
-#pragma mark 移动 步骤3
+//移动 步骤3
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
     id object = [[self.datasource objectAtIndex:fromIndexPath.row]retain];

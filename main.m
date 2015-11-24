@@ -1,4 +1,4 @@
-﻿
+
 #import <Foundation/Foundation.h>
 
 int main(int argc, const char * argv[]) {
@@ -344,20 +344,6 @@ int main(int argc, const char * argv[]) {
     
     
     
-    
-#pragma mark 数组的两种遍历方法
-    NSArray *days = [NSArray arrayWithObjects:@"SUN", @"MON", @"TUE", @"WED", @"THU", @"FRI", @"SAT", nil];
-    
-    NSLog(@"%@",days);
-    
-    for (int i = 0; i < days.count; i ++) {
-        NSLog(@"%@",[days objectAtIndex:i]);
-    }
-    
-    for (id day in days) {
-        NSLog(@"%@",day);
-    }
-    
 #pragma mark 键/值的互相查找
     
     
@@ -389,18 +375,8 @@ int main(int argc, const char * argv[]) {
     [mutableDict removeAllObjects];
     NSLog(@"%@",mutableDict);
     
-#pragma mark- 字典遍历
-    for (int i  = 0 ; i < mutableDict.count; i ++) {
-        NSString *akey = [[mutableDict allKeys]objectAtIndex:i];
-        NSString *aValue = [mutableDict objectForKey:akey];
-        //NSString *a1Value = [mutableDict valueForKey:akey];
-        NSLog(@"%@:%@",akey,aValue);
-    }
-    for (id keys in mutableDict) {
-        NSLog(@"%@:%@",keys,mutableDict[keys]);
-    }
     
-#pragma mark -集合
+#pragma mark- 集合
     /**无序 互异 确定**/
     
     NSSet *set1 = [[NSSet alloc]initWithObjects:@1,@2,@3, nil];
@@ -441,8 +417,7 @@ int main(int argc, const char * argv[]) {
     
     [mutableSet removeAllObjects];
     NSLog(@"%@",mutableSet);
-#pragma mark 集合-countSet
-    //countSet 在set 的基础上添加了记数功能
+#pragma mark 集合-countSet 添加了记数功能
     NSCountedSet *countSet = [NSCountedSet setWithSet:set4];
     [countSet addObjectsFromArray:@[@1,@1,@2,@2]];
     NSLog(@"%ld",[countSet countForObject:@1]);
@@ -609,24 +584,65 @@ int main(int argc, const char * argv[]) {
     
 #pragma mark-  三大集合类的快速枚举
     
+    
+    /***
+     经典for循环
+     for in (NSFastEnumeration)
+     makeObjectsPerformSelector
+     kvc集合运算符
+     enumerateObjectsUsingBlock
+     enumerateObjectsWithOptions(NSEnumerationConcurrent)
+     dispatch_apply
+     
+     */
+    
+    
     //数组的快速枚举
     NSArray *testArray = @[@1, @2, @3, @4];
     for (id object in testArray) {
         NSLog(@"%@",object);
     }
     
+    //倒序遍历
+    for (NSString * str in [array reverseObjectEnumerator]) {
+        NSLog(@"%@",str);
+    }
+    
+    //使用block 遍历
+    [array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        NSLog(@"%@",obj);
+    }];
+    
+    //block - 倒序
+    [array enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        NSLog(@"%@",obj);
+    }];
+    
+    
+    
+    //使用block同时遍历字典key，value
+    
+    //block版本的字典遍历可以同时取key和value（forin只能取key再手动取value），如：
+    NSDictionary *dict = @{@"a": @"1", @"b": @"2"};
+    [dict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        NSLog(@"key: %@, value: %@", key, obj);
+    }];
+    
+    //对于耗时且顺序无关的遍历，使用并发版本 NSEnumerationConcurrent
+    [array enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(Sark *sark, NSUInteger idx, BOOL *stop) {
+        [sark doSomethingSlow];
+    }];
+    
     
     //字典的快速枚举   字典快速枚举得到的是一个一个键 我们依然需要在快速枚举体内通过键去获取与之对应的值
-
-//    for (id key  in dict) {
-//        NSLog(@"%@:%@,key" ,dict[key]);
-//    }
+    for (id key  in dict) {
+        NSLog(@"%@:%@,key" ,dict[key]);
+    }
     
     //对集合做快速枚举 可以得到每一个对象
-
-//    for (id object in set) {
-//        NSLog(@"%@",object);
-//    }
+    for (id object in set) {
+        NSLog(@"%@",object);
+    }
     
 #pragma mark- NSDate
     
@@ -694,7 +710,6 @@ int main(int argc, const char * argv[]) {
     NSLog(@"%@",timeZone);
     
 #pragma mark- NSTimer
-    
     
     /*
      
