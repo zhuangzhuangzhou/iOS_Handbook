@@ -711,6 +711,19 @@ int main(int argc, const char * argv[]) {
     
 #pragma mark- NSTimer
     
+    
+    //注意这两者的区别
+    NSTimer *timer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(gotogo) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+    
+    
+    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1.5 target:self selector:@selector(gotogo) userInfo:nil repeats:YES];
+    [timer fire];
+
+    
+    
+    
+    
     /*
      
      + (NSTimer *)timerWithTimeInterval:(NSTimeInterval)ti invocation:(NSInvocation *)invocation repeats:(BOOL)yesOrNo;

@@ -1276,7 +1276,7 @@ tapGesture.numberOfTouchesRequired = 2;
 
 #pragma mark- UIScrollView
 
-tableView/UIC ollectionView 是scrollView 的子类 （只要是scrollView的子类都可以使用它的代理方法）
+# TableView/CollectionView 是scrollView 的子类 （只要是scrollView的子类都可以使用它的代理方法）
 
 contentSize  //定义内容区域大小，决定是否能够滑动
 contentOffset    //内容左上角距离坐标原点的偏移量
@@ -1328,7 +1328,7 @@ scrollView.contentSize = CGSizeMake(self.view.frame.size.width * 5, CGRectGetHei
 //是否显示滑动指示器(默认YES)
 scrollView.showsVerticalScrollIndicator = NO;
 
-//是否通过状态了回到顶部(默认为YES，只对纵向有用)
+//是否通过状态栏回到顶部(默认为YES，只对纵向有用)
 scrollView.scrollsToTop = NO;
 
 //是否使用边界回弹动画(默认YES)
@@ -1383,28 +1383,42 @@ pageControl.currentPageIndicatorTintColor = [UIColor blueColor];//高亮点颜�
 
 
 
+#pragma PageControl 和 scrollView 的相互关联
 
-
+/**
+ *  通过当前pageControl的currentPage来修改scrollView的偏移量
+ */
 - (void)handlePageControlAction:(UIPageControl *)sender{
-    //通过当前pageControl的currentPage来修改scrollView的偏移量
-    UIScrollView *scrollView = nil;
-    for (id object in self.view.subviews) {
-        if ([object isKindOfClass:[UIScrollView class]]) {
-            scrollView = object;
-            break;
-        }
-    }
-    
+//    UIScrollView *scrollView = nil;
+//    for (id object in self.view.subviews) {
+//        if ([object isKindOfClass:[UIScrollView class]]) {
+//            scrollView = object;
+//            break;
+//        }
+//    }
     CGPoint offset = CGPointMake(CGRectGetWidth(scrollView.bounds) * sender.currentPage, 0);
     
     //根据计算出来的偏移量来修改scrollView的偏移量
     //scrollView.contentOffset = offset;
-    
     [scrollView setContentOffset:offset animated:YES];//修改偏移量并且有动画效果
 }
 
 
-
+/**
+ * （代理方法：结束减速时触发）通过scrollView的偏移量计算currentPage
+ */
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    
+    //获取scrollView滑动结束后的偏移量
+    CGPoint offSet = scrollView.contentOffset;
+    
+    //通过offset计算当前是第几个页面
+    NSInteger index = offSet.x / CGRectGetWidth(scrollView.bounds);
+    
+    //访问pagecontrol，给其currentPage属性赋值
+    UIPageControl *pageControl = (UIPageControl *)[self.view viewWithTag:5644];
+    pageControl.currentPage = index;
+}
 
 
 
@@ -1512,7 +1526,6 @@ imageView.center = scrollView.center;
 
 //结束减速时触发
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-    //NSLog(@"\n,%s",__func__);
     
     //获取scrollView滑动结束后的偏移量
     CGPoint offSet = scrollView.contentOffset;
