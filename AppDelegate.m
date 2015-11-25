@@ -139,7 +139,7 @@
    imagePickerController.allowsEditing = YES;
    Button.layer.masksToBounds = YES;(圆角属性)
 
-#pragma mark /**  图片自适应大小 **/
+#pragma mark 图片自适应大小
 
 
 imageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -842,6 +842,30 @@ self.view.userInteractionEnabled = YES;
     
     
 }
+
+#pragma mark- 屏幕旋转
+
+
+/***
+ 在屏幕旋转时候，子控件自动调整：
+ 
+ typedef NS_OPTIONS(NSUInteger, UIViewAutoresizing) {
+ UIViewAutoresizingNone                 = 0,不自动调整
+ UIViewAutoresizingFlexibleLeftMargin   = 1 << 0,自动调整与superView左侧距离
+ UIViewAutoresizingFlexibleWidth        = 1 << 1,自动调整自身宽度，保证与superView左右不变
+ UIViewAutoresizingFlexibleRightMargin  = 1 << 2,自动调整与superVew右侧距离
+ UIViewAutoresizingFlexibleTopMargin    = 1 << 3,自动调整与superView顶部距离
+ UIViewAutoresizingFlexibleHeight       = 1 << 4,自动调整自身高度
+ UIViewAutoresizingFlexibleBottomMargin = 1 << 5,自动调整与superView底部距离
+ };
+ 
+ */
+
+NSUInteger i = 1 << 2;//左移 * 2
+NSLog(@"%lu",(unsigned long)i);
+
+_button.autoresizingMask = 751;
+
 
 
 #pragma mark layoutSubviews（屏幕旋转）
@@ -3172,6 +3196,8 @@ Person *aPerson = [[Person alloc]init];
 
 
 #pragma mark 动画
+    
+    
 
 #pragma mark 毛玻璃
 
@@ -3313,7 +3339,11 @@ for（UIView *View in [self.View subviews]）
     }
 }
 
+#pragma mark 隐藏状态栏
 
+    //（全局）在info.plist中设置
+    Status bar is initially hidden = YES
+    viewContrller-based status bar appearance = NO
     
     
     //ios8 导航栏设置背景为透明图片后，下面还是有一条黑线啊，请问如何隐藏
