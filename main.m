@@ -103,6 +103,47 @@ int main(int argc, const char * argv[]) {
         return [str lowercaseString];
     }
     
+    
+    
+#pragma mark- NSRUL
+    
+    //URL中文转码
+
+    方法1:
+    NSString* encodedString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    方法2:
+    NSString * encodedString = (NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(CFStringRef)urlString,NULL,NULL,kCFStringEncodingUTF8);
+    
+    
+    /**
+     *
+     查看方法2参数说明:
+     CFStringRef CFURLCreateStringByAddingPercentEscapes(CFAllocatorRef allocator, CFStringRef originalString, CFStringRef charactersToLeaveUnescaped, CFStringRef legalURLCharactersToBeEscaped, CFStringEncoding encoding);
+     
+     因此做出修改,写出方法:
+     NSString *encodedString = (NSString *)
+     CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
+     (CFStringRef)urlString,
+     (CFStringRef)@"!$&'()*+,-./:;=?@_~%#[]",
+     NULL,
+     kCFStringEncodingUTF8);
+     
+     
+     如果在所有的类里都要用到这个方法,可以写成category,然后在头文件import "NSString+URL.h" 即可调用.
+     
+     - (NSString *)URLEncodedString
+     {
+     NSString *encodedString = (NSString *)
+     CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
+     (CFStringRef)self,
+     (CFStringRef)@"!$&'()*+,-./:;=?@_~%#[]",
+     NULL,
+     kCFStringEncodingUTF8);
+     return encodedString;
+     }
+     
+     */
 #pragma mark- NSNumber
     
     
@@ -654,7 +695,7 @@ int main(int argc, const char * argv[]) {
     NSDate *date2 = [NSDate dateWithTimeIntervalSinceNow:3600];//以当前系统时间为准，增加指定时间间隔（3600s）后的时间对象
     NSLog(@"%@",date2);
     
-    //根据给定的时间间隔以及标准时间点1970年1月1日0点，推算出相应地时间对象
+    //根据给定的时间间隔以及标准时间点1970年1月1日0点，推算出 相应的 时间对象
     NSDate *date3 = [NSDate dateWithTimeIntervalSince1970:3600];
     NSLog(@"%@",date3);
     
@@ -669,6 +710,22 @@ int main(int argc, const char * argv[]) {
     //获取时间戳
     NSTimeInterval timeStamp = [date2 timeIntervalSince1970];
     NSLog(@"%f",timeStamp);
+    
+#pragma mark 获取当前系统时间
+    NSDate *date = [NSDate date];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
+    [formatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+    NSString *localTime = [formatter stringFromDate:date];
+    //NSLog(@"~~~~~~%@",localTime);
+    
+    
+    //时间戳转换时间
+    NSTimeInterval timeInterval = [time doubleValue] + 288000;
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:timeInterval];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
+    [formatter setDateFormat:@"yyyy-mm-dd HH:mm:ss"];
+    NSString *timeStr = [formatter stringFromDate:date];
+    
     
     
 #pragma mark NSDateformatter

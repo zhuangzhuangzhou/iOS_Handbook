@@ -139,8 +139,11 @@
    imagePickerController.allowsEditing = YES;
    Button.layer.masksToBounds = YES;(圆角属性)
 
-#pragma mark 图片自适应大小
+#pragma mark 获得图片大小
+CGFloat imageWidth = CGImageGetWidth(_imageSource.CGImage);
+CGFloat imageHeight = CGImageGetHeight(_imageSource.CGImage);
 
+#pragma mark 图片自适应大小
 
 imageView.contentMode = UIViewContentModeScaleAspectFit;
 imageView.autoresizesSubviews = YES;
@@ -170,7 +173,84 @@ UIViewContentModeBottomRight
 */
 
 
+#pragma mark 相机拍照取照片自动旋转90度的问题
 
+- (UIImage *)fixOrientation:(UIImage *)aImage {
+    
+    // No-op if the orientation is already correct
+    if (aImage.imageOrientation == UIImageOrientationUp)
+        return aImage;
+    
+    // We need to calculate the proper transformation to make the image upright.
+    // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationDown:
+        case UIImageOrientationDownMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.width, aImage.size.height);
+            transform = CGAffineTransformRotate(transform, M_PI);
+            break;
+            
+        case UIImageOrientationLeft:
+        case UIImageOrientationLeftMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);
+            transform = CGAffineTransformRotate(transform, M_PI_2);
+            break;
+            
+        case UIImageOrientationRight:
+        case UIImageOrientationRightMirrored:
+            transform = CGAffineTransformTranslate(transform, 0, aImage.size.height);
+            transform = CGAffineTransformRotate(transform, -M_PI_2);
+            break;
+        default:
+            break;
+    }
+    
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationUpMirrored:
+        case UIImageOrientationDownMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);
+            transform = CGAffineTransformScale(transform, -1, 1);
+            break;
+            
+        case UIImageOrientationLeftMirrored:
+        case UIImageOrientationRightMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.height, 0);
+            transform = CGAffineTransformScale(transform, -1, 1);
+            break;
+        default:
+            break;
+    }
+    
+    // Now we draw the underlying CGImage into a new context, applying the transform
+    // calculated above.
+    CGContextRef ctx = CGBitmapContextCreate(NULL, aImage.size.width, aImage.size.height,
+                                             CGImageGetBitsPerComponent(aImage.CGImage), 0,
+                                             CGImageGetColorSpace(aImage.CGImage),
+                                             CGImageGetBitmapInfo(aImage.CGImage));
+    CGContextConcatCTM(ctx, transform);
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationLeft:
+        case UIImageOrientationLeftMirrored:
+        case UIImageOrientationRight:
+        case UIImageOrientationRightMirrored:
+            // Grr...
+            CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.height,aImage.size.width), aImage.CGImage);
+            break;
+            
+        default:
+            CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.width,aImage.size.height), aImage.CGImage);
+            break;
+    }
+    
+    // And now we just create a new UIImage from the drawing context
+    CGImageRef cgimg = CGBitmapContextCreateImage(ctx);
+    UIImage *img = [UIImage imageWithCGImage:cgimg];
+    CGContextRelease(ctx);
+    CGImageRelease(cgimg);
+    return img;
+}
 
 
 
@@ -212,6 +292,8 @@ UIViewContentModeBottomRight
     UIImage *editedImage = info[@"UIImagePickerControllerEditedImage"];//获取选取到 裁切好的照片
     //获取按钮对象
     UIButton * button = (UIButton *)[self.view viewWithTag:1111];
+    
+    
 #pragma mark 图片渲染
     //给按钮设置图片（需要用渲染模式）
     [button setImage:[editedImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
@@ -1871,7 +1953,7 @@ self.Cov.alwaysBounceVertical = YES;
  */
 
 
-/*
+
  ** scrollDirection属性
  设定滚动方向，有UICollectionViewScrollDirectionVertical和UICollectionViewScrollDirectionHorizontal两个值。
  
@@ -2021,7 +2103,7 @@ self.Cov.alwaysBounceVertical = YES;
  
  MyHeadView.m
  
- 复制代码
+ 
  #import "MyHeadView.h"
  
  @interface MyHeadView()
@@ -2051,18 +2133,18 @@ self.Cov.alwaysBounceVertical = YES;
  }
  
  @end
- 复制代码
+
  
  
  在注册Cell和补充视图时，也可以用新建xib文件的方式：
  
- 复制代码
+
  [self.myCollectionView registerNib:[UINib nibWithNibName:@"MyCollectionCell" bundle:nil] forCellWithReuseIdentifier:@"hxwCell"];
  
  [self.myCollectionView registerNib:[UINib nibWithNibName:@"MySupplementaryView" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"hxwHeader"];
  
  [self.myCollectionView registerNib:[UINib nibWithNibName:@"MySupplementaryView" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"hxwFooter"];
- 复制代码
+ 
  用这种方式注册后，甚至可以不用新建类去绑定这个xib，直接通过viewWithTag的方式获取xib里的控件：
  
  UICollectionReusableView *view =  [collectionView dequeueReusableSupplementaryViewOfKind :kind withReuseIdentifier:@"hxwHeader" forIndexPath:indexPath];
@@ -2114,9 +2196,11 @@ self.Cov.alwaysBounceVertical = YES;
  复制代码
  
  
+ #pr   
+  设定指定区内Cell的最小行距，也可以直接设置UICollectionViewFlowLayout的minimumLineSpacing属性
  - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
  
- 设定指定区内Cell的最小行距，也可以直接设置UICollectionViewFlowLayout的minimumLineSpacing属性
+
  
  复制代码
  - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
@@ -2230,7 +2314,7 @@ self.Cov.alwaysBounceVertical = YES;
  }
  
  
- */
+ 
 
 
 //1.初始化collectionView
@@ -2400,8 +2484,8 @@ self.navigationController.navigationBar.shadowImage = [UIImage new];
 
 //为导航条设置背景图片
 [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"5"] forBarMetrics:UIBarMetricsCompactPrompt];
-self.navigationController.navigationBar.translucent = YES;//导航条的半透明属性
-
+//导航条的半透明属性
+self.navigationController.navigationBar.translucent = YES;
 /***
  共四种样式
  UIBarMetricsCompact 透明(简洁)   --  设置这个属性 去不掉shadowImage
@@ -2428,7 +2512,6 @@ UIBarButtonItem *secondRightBarButton = [[UIBarButtonItem alloc]initWithTitle:@"
 
 self.navigationItem.rightBarButtonItems =@[ rigtBarButtonItem,secondRightBarButton ];
 
-UIImage *image = [[UIImage imageNamed:@"2.png"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithImage:image style:UIBarButtonItemStylePlain target:self action:nil];
 self.navigationItem.leftBarButtonItem = leftBarButton;
 
@@ -3248,6 +3331,11 @@ self.tableView.tableHeaderView = searchController.searchBar;
 
 #pragma mark- StoryBoard & XIB
 
+    
+UIStoryboard *storyBoard  = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+RootViewController *rootVC = [storyBoard instantiateViewControllerWithIdentifier:@"RootViewController"];
+    
+    
 //用nib文件来初始化
 MainViewController *mainVC = [[MainViewController alloc]initWithNibName:@"MainViewController" bundle:nil];
 self.window.rootViewController = mainVC;
