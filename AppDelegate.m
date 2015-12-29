@@ -1954,8 +1954,8 @@ self.Cov.alwaysBounceVertical = YES;
 
 
 
- ** scrollDirection属性
- 设定滚动方向，有UICollectionViewScrollDirectionVertical和UICollectionViewScrollDirectionHorizontal两个值。
+// ** scrollDirection属性
+ //设定滚动方向，有UICollectionViewScrollDirectionVertical和UICollectionViewScrollDirectionHorizontal两个值。
  
  ** headerReferenceSize属性与footerReferenceSize属性
  设定页眉和页脚的全局尺寸，需要注意的是，根据滚动方向不同，header和footer的width和height中只有一个会起作用。如果要单独设置指定区内的页面和页脚尺寸，可以使用下面方法：
@@ -1965,9 +1965,9 @@ self.Cov.alwaysBounceVertical = YES;
  - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section
  
  
- ** sectionInset属性
+ //** sectionInset属性
  
- ** 设定全局的区内边距，如果想要设定指定区的内边距，可以使用下面方法：
+ //** 设定全局的区内边距，如果想要设定指定区的内边距，可以使用下面方法：
  
  - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section;
  
@@ -1977,11 +1977,11 @@ self.Cov.alwaysBounceVertical = YES;
  
  
  
- ** UICollectionViewDataSource
+// ** UICollectionViewDataSource
  
  - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
  
- 返回collection view里区(section)的个数，如果没有实现该方法，将默认返回1：
+// 返回collection view里区(section)的个数，如果没有实现该方法，将默认返回1：
  
  - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
  {
@@ -1991,7 +1991,7 @@ self.Cov.alwaysBounceVertical = YES;
  
  - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
  
- 返回指定区(section)包含的数据源条目数(number of items)，该方法必须实现：
+ //返回指定区(section)包含的数据源条目数(number of items)，该方法必须实现：
  
  - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
  {
@@ -2001,7 +2001,7 @@ self.Cov.alwaysBounceVertical = YES;
  
  - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
  
- 返回某个indexPath对应的cell，该方法必须实现：
+ //返回某个indexPath对应的cell，该方法必须实现：
  
  
  - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -2017,13 +2017,17 @@ self.Cov.alwaysBounceVertical = YES;
  }
  return cell;
  }
+
+/**
+ *UICollectionViewCell结构上相对比较简单，由下至上：
  
- UICollectionViewCell结构上相对比较简单，由下至上：
- 
- 首先是cell本身作为容器view
- 然后是一个大小自动适应整个cell的backgroundView，用作cell平时的背景
- 再其次是selectedBackgroundView，是cell被选中时的背景
- 最后是一个contentView，自定义内容应被加在这个view上
+  首先是cell本身作为容器view
+  然后是一个大小自动适应整个cell的backgroundView，用作cell平时的背景
+  再其次是selectedBackgroundView，是cell被选中时的背景
+  最后是一个contentView，自定义内容应被加在这个view上
+
+ */
+
  
  
  
@@ -2089,54 +2093,10 @@ self.Cov.alwaysBounceVertical = YES;
  
  
  
- 
- 
- 
- MyHeadView.h
- 
- #import <UIKit/UIKit.h>
- 
- @interface MyHeadView : UICollectionReusableView
- - (void) setLabelText:(NSString *)text;
- @end
- 
- 
- MyHeadView.m
- 
- 
- #import "MyHeadView.h"
- 
- @interface MyHeadView()
- 
- @property (strong, nonatomic) UILabel *label;
- 
- @end
- 
- @implementation MyHeadView
- 
- - (id)initWithFrame:(CGRect)frame
- {
- self = [super initWithFrame:frame];
- if (self)
- {
- self.label = [[UILabel alloc] init];
- self.label.font = [UIFont systemFontOfSize:18];
- [self addSubview:self.label];
- }
- return self;
- }
- 
- - (void) setLabelText:(NSString *)text
- {
- self.label.text = text;
- [self.label sizeToFit];
- }
- 
- @end
 
  
  
- 在注册Cell和补充视图时，也可以用新建xib文件的方式：
+ //在注册Cell和补充视图时，也可以用新建xib文件的方式：
  
 
  [self.myCollectionView registerNib:[UINib nibWithNibName:@"MyCollectionCell" bundle:nil] forCellWithReuseIdentifier:@"hxwCell"];
@@ -2145,7 +2105,7 @@ self.Cov.alwaysBounceVertical = YES;
  
  [self.myCollectionView registerNib:[UINib nibWithNibName:@"MySupplementaryView" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"hxwFooter"];
  
- 用这种方式注册后，甚至可以不用新建类去绑定这个xib，直接通过viewWithTag的方式获取xib里的控件：
+ //用这种方式注册后，甚至可以不用新建类去绑定这个xib，直接通过viewWithTag的方式获取xib里的控件：
  
  UICollectionReusableView *view =  [collectionView dequeueReusableSupplementaryViewOfKind :kind withReuseIdentifier:@"hxwHeader" forIndexPath:indexPath];
  
@@ -2160,8 +2120,7 @@ self.Cov.alwaysBounceVertical = YES;
  
  - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
  
- 设定指定Cell的尺寸
- 
+ //设定指定Cell的尺寸
  复制代码
  - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
  {
@@ -2174,7 +2133,7 @@ self.Cov.alwaysBounceVertical = YES;
  return CGSizeMake(75, 30);
  }
  }
- 复制代码
+]
  
  
  - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section;
@@ -2240,7 +2199,7 @@ self.Cov.alwaysBounceVertical = YES;
  
  - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
  
- 当指定indexPath处的item被选择时触发
+ //当指定indexPath处的item被选择时触发
  
  - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
  {
@@ -2251,14 +2210,14 @@ self.Cov.alwaysBounceVertical = YES;
  P.s. 当你删除或添加元素时，一定要更新numberOfItemsInSection的返回情况。
  
  
- 
+ //当指定indexPath处的item被取消选择时触发，仅在允许多选时被调用
  - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
  
- 当指定indexPath处的item被取消选择时触发，仅在允许多选时被调用
+
  
  
  
- 下面是三个和高亮有关的方法：
+ //下面是三个和高亮有关的方法：
  
  - (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
  
@@ -2268,16 +2227,16 @@ self.Cov.alwaysBounceVertical = YES;
  
  
  
- 事件的处理顺序如下：
+ //事件的处理顺序如下：
  
- 手指按下
+ //手指按下
  shouldHighlightItemAtIndexPath (如果返回YES则向下执行，否则执行到这里为止)
  didHighlightItemAtIndexPath (高亮)
- 手指松开
+ //手指松开
  didUnhighlightItemAtIndexPath (取消高亮)
  shouldSelectItemAtIndexPath (如果返回YES则向下执行，否则执行到这里为止)
  didSelectItemAtIndexPath (执行选择事件)
- 如果只是简单实现点击后cell改变显示状态，只需要在cellForItemAtIndexPath方法里返回cell时，指定cell的selectedBackgroundView：
+ //如果只是简单实现点击后cell改变显示状态，只需要在cellForItemAtIndexPath方法里返回cell时，指定cell的selectedBackgroundView：
  
  复制代码
  - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -2290,8 +2249,8 @@ self.Cov.alwaysBounceVertical = YES;
  
  return cell;
  }
- 复制代码
- 如果要实现点击时(手指未松开)的显示状态与点击后(手指松开)的显示状态，则需要通过上面提到的方法来实现：
+
+ //如果要实现点击时(手指未松开)的显示状态与点击后(手指松开)的显示状态，则需要通过上面提到的方法来实现：
  
  复制代码
  - (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath

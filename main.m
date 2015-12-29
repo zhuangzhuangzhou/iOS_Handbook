@@ -199,6 +199,10 @@ int main(int argc, const char * argv[]) {
      
      */
     
+    
+    
+    int pm2_5 = [string intValue];
+    
 #pragma mark- NSArray
     
     //创建
