@@ -1,6 +1,6 @@
 #define KScreenWidth (CGRectGetWidth([UIScreen mainScreen].bounds)) //屏幕宽度
 #define KScreenHeight (CGRectGetHeight([UIScreen mainScreen].bounds)) //屏幕高度
-
+#define IAIOS8 ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
 
 #pragma mark UIWindow
 
@@ -1972,11 +1972,8 @@ self.Cov.alwaysBounceVertical = YES;
  - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section;
  
  然后需要实现三种类型的委托：UICollectionViewDataSource, UICollectionViewDelagate和UICollectionViewDelegateFlowLayout。
- 
- @interface ViewController : UIViewController <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource>
- 
- 
- 
+
+
 // ** UICollectionViewDataSource
  
  - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
@@ -2030,29 +2027,23 @@ self.Cov.alwaysBounceVertical = YES;
 
  
  
- 
- 
+#pragma mark 为collection view添加一个补充视图(页眉或页脚)
+
  - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
- 
- 为collection view添加一个补充视图(页眉或页脚)
- 
- 
- 
+
+  //设定页眉的尺寸
  - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
+
  
- 设定页眉的尺寸
- 
- 
- 
+ //设定页脚的尺寸
  - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section
  
- 设定页脚的尺寸
- 
- 
+
+
  
  - (void)registerClass:(Class)viewClass forSupplementaryViewOfKind:(NSString *)elementKind withReuseIdentifier:(NSString *)identifier
  
- 添加页眉和页脚以前需要注册类和标识：
+ //添加页眉和页脚以前需要注册类和标识：
  
  
  
