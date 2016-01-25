@@ -723,6 +723,17 @@ int main(int argc, const char * argv[]) {
     //NSLog(@"~~~~~~%@",localTime);
     
     
+    +(NSString*)getCurrentDate
+    {
+        NSString *result = @"";
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"yyyyMMddHHmmss"];
+        result = [formatter stringFromDate:[NSDate date]];
+        
+        return  result;
+    }
+    
+    
     //时间戳转换时间
     NSTimeInterval timeInterval = [time doubleValue] + 288000;
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:timeInterval];

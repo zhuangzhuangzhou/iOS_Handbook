@@ -1,6 +1,6 @@
 #define KScreenWidth (CGRectGetWidth([UIScreen mainScreen].bounds)) //屏幕宽度
 #define KScreenHeight (CGRectGetHeight([UIScreen mainScreen].bounds)) //屏幕高度
-
+#define appDelegate ((AppDelegate *)([UIApplication sharedApplication].delegate))
 
 #pragma mark UIWindow
 
@@ -632,7 +632,38 @@ self.button.userInteractionEnabled = NO;//关交互
 
 
     
+#pragma mark - UIMenuController
+- (void)longPressAction:(UILongPressGestureRecognizer  *)sender{
+    CGPoint touchPoint = [sender locationInView:self.hallCollection];
+    NSIndexPath *indexPath = [self.hallCollection indexPathForItemAtPoint:touchPoint];
+    if (indexPath == nil) {
+        //NSLog(@"kong");
+    }else{
+        //NSLog(@"%ld,%ld",(long)indexPath.section,(long)indexPath.row);
+        UICollectionViewCell * cell = [self.hallCollection cellForItemAtIndexPath:indexPath];
+        [self becomeFirstResponder];
+        UIMenuController *menu = [UIMenuController sharedMenuController];
+        UIMenuItem *report = [[UIMenuItem alloc]initWithTitle:@"举报" action:@selector(reportAction:)];
+        [menu setTargetRect:cell.frame inView:cell.superview];
+        [menu setMenuItems:@[report]];
+        [menu setMenuVisible:YES animated:YES];
+    }
     
+    
+}
+
+//MenuController 必须实现的两个方法
+- (BOOL)canBecomeFirstResponder{
+    return YES;
+}
+
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender{
+    if (action == @selector(reportAction:) ) {
+        return YES;
+    }
+    return NO;
+}
+
 
 #pragma mark- UIAlert
     
@@ -1683,6 +1714,11 @@ NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
 //2.取消cell分割线
 tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
+
+
+
+
+
 /***
  
  属性：
@@ -1703,6 +1739,11 @@ NSArray *indexPaths = [_myTableView indexPathsForVisibleRows];
 
 //设置某个视图为tableView的表头 （取消表头漂浮）
 tableView.tableHeaderView = scrollView;//注意这句
+
+
+//cell 选择打勾
+cell.accessoryType = UITableViewCellAccessoryCheckmark;
+
 
 #pragma mark 右划删除
 
@@ -1813,9 +1854,20 @@ self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 
+#pragma mark 获取当前cell
 
+//注意这些的区别
+[self.collection indexPathsForSelectedItems];
 
+self.collection.visibleCells[indexPath.row];
 
+[self.collection cellForItemAtIndexPath:indexPath];//具体某一个
+
+----
+[self.collectionView visibleCells];//所有可见的
+
+[self.collectionView indexPathsForVisibleItems];//可见的indexPath
+[self.collectionView indexPathsForSelectedItems];//选中的
 
 
 
@@ -1929,6 +1981,10 @@ UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
 
 //当数据不多，collectionView.contentSize小于collectionView.frame.size的时候，UICollectionView是不会滚动的
 self.Cov.alwaysBounceVertical = YES;
+
+
+// 选择一个 （顺便滚动）
+[self.collection selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionTop];
 
 滚动到下一页
 /*
@@ -2173,14 +2229,14 @@ self.Cov.alwaysBounceVertical = YES;
  return 20.0;
  }
  }
- 复制代码
+
  
  
  - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section;
  
  设定指定区内Cell的最小间距，也可以直接设置UICollectionViewFlowLayout的minimumInteritemSpacing属性
  
- 复制代码
+
  - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
  {
  if(section==0)
@@ -2192,7 +2248,7 @@ self.Cov.alwaysBounceVertical = YES;
  return 20.0;
  }
  }
- 复制代码
+
  
  
  UICollectionViewDelegate
@@ -3121,7 +3177,7 @@ AppDelegata.h中属性的含义：
 
 
 
-#pragma mark- 解析
+#pragma mark- 解析 - 所有的数据都需要进行空判断
 
 所有的数据都需要进行空判断
 
@@ -3234,8 +3290,60 @@ Person *aPerson = [[Person alloc]init];
 
 
 
-#pragma mark 线程
-
+#pragma mark 多线程
+    /**
+     一句话回到主线程
+     [self performSelectorOnMainThread:@selector(mainMethod) withObject:nil waitUntilDone:NO];
+     */
+    
+    
+    注意：在多线程共同访问一个资源时候，如有必要，需要加线程锁。NSLock;
+    
+    /*
+     1.NSThead
+    target：发送消息的对象 selector：子线程回调方法，在此方法中实现子线程中所要进行的操作 object：回调方法的参数
+     */
+    
+    
+    
+    //自己手动开辟的线程。得放到自动释放池中进行操作，系统开辟线程不用
+    NSThread *thread = [[NSThread alloc]initWithTarget:self selector:@selector(gogogo:) object:@"我是参数"];
+    //[thread start];//执行子线程回调方法
+    
+    
+    //NSThead第二种开辟线程的方式，通过便利构造器。此方法不用调用start启动线程
+    [NSThread detachNewThreadSelector:@selector(gogogo:) toTarget:self withObject:@"我也是参数"];
+    
+    
+    /**
+     2.NSOperation 是一个抽象类 『不具备实际开辟线程的作用，将NSOperation放在哪个线程中，它就在哪个线程中执行回调方法』
+     */
+    
+    
+    //子类1  NSInvocationOperation 参数和NSTherad alloc中的三个参数功能相同
+    NSInvocationOperation * invovationOperation = [[NSInvocationOperation alloc]initWithTarget:self selector:@selector(gogogo:) object:@"1operation回调方法的参数"];
+    //执行operation回调方法
+    [invovationOperation start];
+    
+    
+    //子类2 NSBlockOperation
+    NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:^{
+        NSLog(@"2---%@",[NSThread currentThread]);
+    }];
+    [blockOperation start];
+    
+    
+    //operationQueue 队列。将operation 加入队列中之后，operation将会自动在子线程中执行，并且是并发执行，不用手动调用start方法，系统会调用。
+    NSOperationQueue *queue = [[NSOperationQueue alloc]init];
+    
+    //添加operation『在OperationQueue队列中，执行是无序的，当需要队列有序执行的时候，就需要添加依赖关系,添加完依赖关系，先执行的始终是参数』
+    //[blockOperation addDependency:invovationOperation];//依赖关系影响执行顺序
+    [invovationOperation addDependency:blockOperation];
+    
+    
+    [queue addOperation:invovationOperation];
+    [queue addOperation:blockOperation];
+    
 
 #pragma mark 动画
     
@@ -3386,8 +3494,13 @@ for（UIView *View in [self.View subviews]）
     }
 }
 
-#pragma mark 隐藏状态栏
+#pragma mark 状态栏相关
 
+    
+    /**
+     隐藏
+     */
+    
     //（全局）在info.plist中设置
     Status bar is initially hidden = YES
     viewContrller-based status bar appearance = NO
@@ -3400,6 +3513,23 @@ for（UIView *View in [self.View subviews]）
     
     
 
+    /**
+     *  字体改为白色
+     */
+    
+    1.viewContrller-based status bar appearance = NO
+    2.[[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
+    
+    
+    /**
+     *  iOS 9
+     */
+    -(UIStatusBarStyle)preferredStatusBarStyle
+    {
+        return UIStatusBarStyleLightContent;
+    }
+    
+    
 #pragma mark SDwebImagge
 
 [[SDImageCache sharedImageCache] clearDisk];
