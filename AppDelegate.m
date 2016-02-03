@@ -122,8 +122,10 @@
     
   
 #pragma mark- 图片相关 UIImage & UIImageView
-    
-    //UIImage继承与NSObject ,NSImageView 继承与UIView
+
+//UIImage和UIView使用的是左上原点坐标，Core Image和Core Graphics使用的是左下原点坐标。这个概念很重要，当你遇到图像绘制倒立问题的时候你就知道了。
+
+    //UIImage继承与NSObject ,UIImageView 继承与UIView
     
 //  imageNamed便利构造器创建的对象不适用于大型图片资源，因为第一次使用该方法加载图片对象时，系统就会对该图片做缓存，方便下次直接使用，也就是该方法创建的图片对象并不销毁内存。小的图片使用它会提高加载效率。
     UIImage *image = [UIImage imageNamed:@"200711912453162_2.jpg"];
@@ -143,7 +145,7 @@
 CGFloat imageWidth = CGImageGetWidth(_imageSource.CGImage);
 CGFloat imageHeight = CGImageGetHeight(_imageSource.CGImage);
 
-#pragma mark 图片自适应大小
+#pragma mark 图片自适应大小／等比缩放
 
 imageView.contentMode = UIViewContentModeScaleAspectFit;
 imageView.autoresizesSubviews = YES;
@@ -173,8 +175,58 @@ UIViewContentModeBottomRight
 */
 
 
+
+//2.保持原来的长宽比，生成一个缩略图
+- (UIImage *)thumbnailWithImageWithoutScale:(UIImage *)image size:(CGSize)asize
+{
+    UIImage *newimage;
+    if (nil == image) {
+        newimage = nil;
+    }
+    else{
+        CGSize oldsize = image.size;
+        CGRect rect;
+        if (asize.width/asize.height > oldsize.width/oldsize.height) {
+            rect.size.width = asize.height*oldsize.width/oldsize.height;
+            rect.size.height = asize.height;
+            rect.origin.x = (asize.width - rect.size.width)/2;
+            rect.origin.y = 0;
+        }
+        else{
+            rect.size.width = asize.width;
+            rect.size.height = asize.width*oldsize.height/oldsize.width;
+            rect.origin.x = 0;
+            rect.origin.y = (asize.height - rect.size.height)/2;
+        }
+        UIGraphicsBeginImageContext(asize);
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        CGContextSetFillColorWithColor(context, [[UIColor clearColor] CGColor]);
+        UIRectFill(CGRectMake(0, 0, asize.width, asize.height));//clear background
+        [image drawInRect:rect];
+        newimage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+    }
+    return newimage;
+}
+
+
+
+
 #pragma mark 相机拍照取照片自动旋转90度的问题
 
+//方法1(Category)
+- (UIImage *)imageWithFixedOrientation {
+    if (self.imageOrientation == UIImageOrientationUp) return self;
+    
+    UIGraphicsBeginImageContextWithOptions(self.size, NO, self.scale);
+    [self drawInRect:(CGRect){0, 0, self.size}];
+    UIImage *normalizedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return normalizedImage;
+}
+
+
+//方法2
 - (UIImage *)fixOrientation:(UIImage *)aImage {
     
     // No-op if the orientation is already correct
@@ -256,6 +308,8 @@ UIViewContentModeBottomRight
 
 #pragma mark UIImagePickerController(图片拾取器)
 
+UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
+
 /***
  
  1.遵循双代理
@@ -283,7 +337,6 @@ UIViewContentModeBottomRight
     [imagePickerController release];
     
     //4.实现图片选取器的代理方法
-    
     
 }
 
