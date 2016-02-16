@@ -141,11 +141,30 @@
    imagePickerController.allowsEditing = YES;
    Button.layer.masksToBounds = YES;(圆角属性)
 
+#pragma mark 纯色图片
+//方法一
+- (void)drawRect:(CGRect)rect
+{
+    CGRect bounds = [self bounds];
+    [[UIColor blackColor] set];
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextClipToMask(context, bounds, [myImage CGImage]);
+    CGContextFillRect(context, bounds);
+}
+
+//方法二
+CGSize imageSize =CGSizeMake(50,50);
+UIGraphicsBeginImageContextWithOptions(imageSize,0, [UIScreenmainScreen].scale);
+[RGBA(206,58, 216, 1) set];
+UIRectFill(CGRectMake(0,0, imageSize.width, imageSize.height));
+UIImage *pressedColorImg =UIGraphicsGetImageFromCurrentImageContext();
+UIGraphicsEndImageContext();
+
 #pragma mark 获得图片大小
 CGFloat imageWidth = CGImageGetWidth(_imageSource.CGImage);
 CGFloat imageHeight = CGImageGetHeight(_imageSource.CGImage);
 
-#pragma mark 图片自适应大小／等比缩放
+#pragma mark 图片自适应大小
 
 imageView.contentMode = UIViewContentModeScaleAspectFit;
 imageView.autoresizesSubviews = YES;
@@ -319,9 +338,6 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
  2.点击按钮时候 实现方法中 创建图片拾取器
  
  3.实现图片拾取器的代理
- 
- 
- 
  
  
  */
@@ -727,7 +743,6 @@ self.button.userInteractionEnabled = NO;//关交互
      视图控制器必须得实现协议UIAlertViewDelegate中的方法，并指定delegate为self，才能使弹出的Alert窗口响应点击事件。
      
      */
-    
 
     UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"你的手机将要爆炸" delegate:self cancelButtonTitle:@"扔手机" otherButtonTitles:@"打含猪",@"吃饭饭",nil];
     
