@@ -2682,7 +2682,6 @@ self.navigationController.interactivePopGestureRecognizer.delegate = self;
 #pragma mark 模态
 -(void)handleAddAction: (UIBarButtonItem *)sender{
     
-    
     AddAddressController *addAddressVC = [[AddAddressController alloc]init];
     //创建导航控制器，将新建联系人控制器作为根
     UINavigationController *navi = [[UINavigationController alloc]initWithRootViewController:addAddressVC];
@@ -2793,6 +2792,11 @@ self.navigationController.interactivePopGestureRecognizer.delegate = self;
  3.通过block传值(返回事件触发时)
  self.passValueBlock(textFeild.text);
  */
+
+Block类型定义：返回值类型(^ 变量名)(参数列表)（注意Block也是一种类型）；
+Block的typedef定义：返回值类型(^类型名称)(参数列表)；
+Block的实现：^(参数列表){操作主体}；
+Block中可以读取块外面定义的变量但是不能修改，如果要修改那么这个变量必须声明_block修饰；
 
 #pragma mark 通知中心
 
