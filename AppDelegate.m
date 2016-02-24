@@ -3392,6 +3392,35 @@ Person *aPerson = [[Person alloc]init];
     
     /**
      2.NSOperation 是一个抽象类 『不具备实际开辟线程的作用，将NSOperation放在哪个线程中，它就在哪个线程中执行回调方法』
+     
+     
+     NSOperation简介
+     
+     1.简单说明
+     
+     NSOperation的作⽤：配合使用NSOperation和NSOperationQueue也能实现多线程编程
+     
+     NSOperation和NSOperationQueue实现多线程的具体步骤：
+     
+     （1）先将需要执行的操作封装到一个NSOperation对象中
+     
+     （2）然后将NSOperation对象添加到NSOperationQueue中
+     
+     （3）系统会⾃动将NSOperationQueue中的NSOperation取出来
+     
+     （4）将取出的NSOperation封装的操作放到⼀条新线程中执⾏
+     
+     2.NSOperation的子类
+     
+     NSOperation是个抽象类,并不具备封装操作的能力,必须使⽤它的子类
+     
+     使用NSOperation⼦类的方式有3种：
+     
+     （1）NSInvocationOperation
+     
+     （2）NSBlockOperation
+     
+     （3）自定义子类继承NSOperation,实现内部相应的⽅法
      */
     
     //子类1  NSInvocationOperation 参数和NSTherad alloc中的三个参数功能相同
