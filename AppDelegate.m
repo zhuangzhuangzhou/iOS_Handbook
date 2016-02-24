@@ -1326,6 +1326,10 @@ stepper.value = 220;
     //获取平移产生的点
     CGPoint currentPoint = [sender translationInView:self.view];//返回一系列在触摸中产生的点
     
+#pragma mark 获取当前的点
+    locationInView:获取到的是手指点击屏幕实时的坐标点；
+    translationInView：获取到的是手指移动后，在相对坐标中的偏移量
+    
     //通过修改view的transform属性，让视图平移
     imageView.transform = CGAffineTransformTranslate(imageView.transform, currentPoint.x, currentPoint.y);//在上一次形变的基础上产生新的增量
     
@@ -3377,27 +3381,23 @@ Person *aPerson = [[Person alloc]init];
     target：发送消息的对象 selector：子线程回调方法，在此方法中实现子线程中所要进行的操作 object：回调方法的参数
      */
     
-    
-    
     //自己手动开辟的线程。得放到自动释放池中进行操作，系统开辟线程不用
     NSThread *thread = [[NSThread alloc]initWithTarget:self selector:@selector(gogogo:) object:@"我是参数"];
     //[thread start];//执行子线程回调方法
     
-    
     //NSThead第二种开辟线程的方式，通过便利构造器。此方法不用调用start启动线程
     [NSThread detachNewThreadSelector:@selector(gogogo:) toTarget:self withObject:@"我也是参数"];
+    
     
     
     /**
      2.NSOperation 是一个抽象类 『不具备实际开辟线程的作用，将NSOperation放在哪个线程中，它就在哪个线程中执行回调方法』
      */
     
-    
     //子类1  NSInvocationOperation 参数和NSTherad alloc中的三个参数功能相同
     NSInvocationOperation * invovationOperation = [[NSInvocationOperation alloc]initWithTarget:self selector:@selector(gogogo:) object:@"1operation回调方法的参数"];
     //执行operation回调方法
     [invovationOperation start];
-    
     
     //子类2 NSBlockOperation
     NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:^{
@@ -3405,14 +3405,12 @@ Person *aPerson = [[Person alloc]init];
     }];
     [blockOperation start];
     
-    
     //operationQueue 队列。将operation 加入队列中之后，operation将会自动在子线程中执行，并且是并发执行，不用手动调用start方法，系统会调用。
     NSOperationQueue *queue = [[NSOperationQueue alloc]init];
     
     //添加operation『在OperationQueue队列中，执行是无序的，当需要队列有序执行的时候，就需要添加依赖关系,添加完依赖关系，先执行的始终是参数』
     //[blockOperation addDependency:invovationOperation];//依赖关系影响执行顺序
     [invovationOperation addDependency:blockOperation];
-    
     
     [queue addOperation:invovationOperation];
     [queue addOperation:blockOperation];
