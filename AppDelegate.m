@@ -3614,7 +3614,7 @@ for（UIView *View in [self.View subviews]）
     
 
     /**
-     *  字体改为白色
+     *  字体改为白色【已废弃】
      */
     
     1.viewContrller-based status bar appearance = NO
@@ -3622,7 +3622,7 @@ for（UIView *View in [self.View subviews]）
     
     
     /**
-     *  iOS 9
+     *  iOS 9 改导航栏字体颜色
      */
     -(UIStatusBarStyle)preferredStatusBarStyle
     {
