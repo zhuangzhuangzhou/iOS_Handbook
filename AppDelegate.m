@@ -61,17 +61,7 @@
      */
     UIColor *color = [UIColor colorWithPatternImage:[UIImage imageNamed:@".jpeg"]];
     aView.backgroundColor = color;
-    
-    
-    //修改frame的大小(不整体修改的情况下)
-    CGRect temp = aView.frame;
-    temp.size.height = 50;
-    aView.frame = temp;
 
-    
-    //添加到window上
-    [self.window addSubview:aView];
-    
     
     
 #pragma mark UIView-视图层次
@@ -3562,7 +3552,16 @@ View *view = [[[NSBundle mainBundle]loadNibNamed:@"View" owner:nil options:nil] 
      */
 
 
-
+#pragma mark- 区别相关
+    //
+    NULL、nil、Nil这三者对于Objective-C中值是一样的，都是(void *)0，那么为什么要区分呢？又与NSNull之间有什么区别：
+    
+    NULL是宏，是对于C语言指针而使用的，表示空指针
+    nil是宏，是对于Objective-C中的对象而使用的，表示对象为空
+    Nil是宏，是对于Objective-C中的类而使用的，表示类指向空
+    NSNull是类类型，是用于表示空的占位对象，与JS或者服务端的null类似的含意
+    
+    //
 
 #pragma mark- 实用相关
 
