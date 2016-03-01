@@ -400,7 +400,12 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
     }
 
     
-    
+
+
+
+
+
+
     
     
 #pragma mark- UILabel
@@ -2406,8 +2411,6 @@ self.Cov.alwaysBounceVertical = YES;
  }
  
  
- 
-
 
 //1.初始化collectionView
 UICollectionView *collectionView = [[UICollectionView alloc]initWithFrame:self.view.bounds collectionViewLayout:layout];
