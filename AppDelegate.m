@@ -314,6 +314,7 @@ UIViewContentModeBottomRight
     return img;
 }
 
+#pragma mark Core Graphics
 
 
 #pragma mark UIImagePickerController(图片拾取器)
@@ -1954,6 +1955,24 @@ CGRect textSize = [self.desclabel.text boundingRectWithSize:CGSizeMake(340, 1000
 }
 
 
+//更解耦的方法 - AFN iOS Example
+- (CGFloat)tableView:(__unused UITableView *)tableView
+heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [PostTableViewCell heightForCellWithPost:self.posts[(NSUInteger)indexPath.row]];
+}
+
+//70.0跟计算高度取较大值
++ (CGFloat)heightForCellWithPost:(Post *)post {
+    return (CGFloat)fmaxf(70.0f, (float)[self detailTextHeight:post.text] + 45.0f);
+}
+
+//自适应高度
++ (CGFloat)detailTextHeight:(NSString *)text {
+    CGRect rectToFit = [text boundingRectWithSize:CGSizeMake(240.0f, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:12.0f]} context:nil];
+    return rectToFit.size.height;
+}
+
 #pragma mark 图片的局部拉伸
 - (UIImage *)resizedImageWithName:(NSString *)name{
     //创建一个原始图片对象
@@ -2256,9 +2275,13 @@ self.Cov.alwaysBounceVertical = YES;
  
  - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section;
  
+<<<<<<< Updated upstream
  设定collectionView(指定区)的边距
  
 
+=======
+// 设定collectionView(指定区)的边距
+>>>>>>> Stashed changes
  - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
  {
  if(section==0)

@@ -462,14 +462,14 @@ int main(int argc, const char * argv[]) {
     
     [mutableSet removeAllObjects];
     NSLog(@"%@",mutableSet);
-#pragma mark 集合-countSet 添加了记数功能
+#pragma mark 计数集合-countSet 添加了记数功能
     NSCountedSet *countSet = [NSCountedSet setWithSet:set4];
     [countSet addObjectsFromArray:@[@1,@1,@2,@2]];
     NSLog(@"%ld",[countSet countForObject:@1]);
     NSLog(@"%@",countSet);
 
-    
-    
+#pragma mark 有序集合
+    NSOrderedSet *set = [NSOrderedSet orderedSetWithArray:array];
     
     
     
