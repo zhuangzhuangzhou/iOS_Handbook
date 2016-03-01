@@ -81,8 +81,6 @@
      //在指定视图之下添加子视图
       self.window insertSubview:<#(UIView *)#> belowSubview:<#(UIView *)#>
      
-     
-     
      */
     
     
@@ -400,12 +398,6 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
     }
 
     
-
-
-
-
-
-
     
     
 #pragma mark- UILabel
