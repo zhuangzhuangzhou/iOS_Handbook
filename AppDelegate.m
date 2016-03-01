@@ -2235,8 +2235,6 @@ self.Cov.alwaysBounceVertical = YES;
  
  
  //在注册Cell和补充视图时，也可以用新建xib文件的方式：
- 
-
  [self.myCollectionView registerNib:[UINib nibWithNibName:@"MyCollectionCell" bundle:nil] forCellWithReuseIdentifier:@"hxwCell"];
  
  [self.myCollectionView registerNib:[UINib nibWithNibName:@"MySupplementaryView" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"hxwHeader"];
@@ -2259,29 +2257,23 @@ self.Cov.alwaysBounceVertical = YES;
  - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
  
  //设定指定Cell的尺寸
- - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
- {
- if(indexPath.section==0 && indexPath.row==1)
- {
- return CGSizeMake(50, 50);
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(indexPath.section==0 && indexPath.row==1)
+    {
+        return CGSizeMake(50, 50);
+    }
+    else
+    {
+        return CGSizeMake(75, 30);
+    }
  }
- else
- {
- return CGSizeMake(75, 30);
- }
- }
-]
+
  
  
  - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section;
- 
-<<<<<<< Updated upstream
- 设定collectionView(指定区)的边距
- 
 
-=======
 // 设定collectionView(指定区)的边距
->>>>>>> Stashed changes
  - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
  {
  if(section==0)
