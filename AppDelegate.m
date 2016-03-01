@@ -2240,7 +2240,6 @@ self.Cov.alwaysBounceVertical = YES;
  - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
  
  //设定指定Cell的尺寸
- 复制代码
  - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
  {
  if(indexPath.section==0 && indexPath.row==1)
@@ -2259,7 +2258,7 @@ self.Cov.alwaysBounceVertical = YES;
  
  设定collectionView(指定区)的边距
  
- 复制代码
+
  - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
  {
  if(section==0)
@@ -2271,16 +2270,16 @@ self.Cov.alwaysBounceVertical = YES;
  return UIEdgeInsetsMake(15, 15, 15, 15);
  }
  }
- 复制代码
+
  
  
- #pr   
+
   设定指定区内Cell的最小行距，也可以直接设置UICollectionViewFlowLayout的minimumLineSpacing属性
  - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
  
 
  
- 复制代码
+
  - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
  {
  if(section==0)
@@ -2357,7 +2356,7 @@ self.Cov.alwaysBounceVertical = YES;
  didSelectItemAtIndexPath (执行选择事件)
  //如果只是简单实现点击后cell改变显示状态，只需要在cellForItemAtIndexPath方法里返回cell时，指定cell的selectedBackgroundView：
  
- 复制代码
+
  - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
  {
  UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"myCell" forIndexPath:indexPath];
@@ -2371,7 +2370,7 @@ self.Cov.alwaysBounceVertical = YES;
 
  //如果要实现点击时(手指未松开)的显示状态与点击后(手指松开)的显示状态，则需要通过上面提到的方法来实现：
  
- 复制代码
+
  - (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
  {
  return YES;
