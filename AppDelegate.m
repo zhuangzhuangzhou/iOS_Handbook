@@ -359,7 +359,6 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-
 #pragma mark 动图
    //用可变数组保存图片对象
    NSMutableArray *images = [NSMutableArray array];
