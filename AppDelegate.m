@@ -1944,7 +1944,7 @@ CGRect textSize = [self.desclabel.text boundingRectWithSize:CGSizeMake(340, 1000
     return textSize.size.height + 20 ;
 }
 
-
+/*
 //更解耦的方法 - AFN iOS Example
 - (CGFloat)tableView:(__unused UITableView *)tableView
 heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -1962,6 +1962,9 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     CGRect rectToFit = [text boundingRectWithSize:CGSizeMake(240.0f, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:12.0f]} context:nil];
     return rectToFit.size.height;
 }
+
+*/
+
 
 #pragma mark 图片的局部拉伸
 - (UIImage *)resizedImageWithName:(NSString *)name{
