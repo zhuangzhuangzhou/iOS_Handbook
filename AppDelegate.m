@@ -73,13 +73,13 @@
      //添加：
      
      //在指定的index 处插入子视图
-     self.window insertSubview:<#(UIView *)#> atIndex:<#(NSInteger)#>
+     self.window insertSubview:(UIView *) atIndex:(NSInteger)
      
      //在指定视图上面添加子视图
-     self.window insertSubview:<#(UIView *)#> aboveSubview:<#(UIView *)#>
+     self.window insertSubview:(UIView *) aboveSubview:(UIView *)
      
      //在指定视图之下添加子视图
-      self.window insertSubview:<#(UIView *)#> belowSubview:<#(UIView *)#>
+      self.window insertSubview:(UIView *) belowSubview:(UIView *)
      
      */
     
@@ -328,7 +328,6 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
  
  3.实现图片拾取器的代理
  
- 
  */
 - (void)handlePickImageAction:(UIButton *)sender{
     //创建图片选取器
@@ -359,11 +358,6 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
     //撤销选取器
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
-
-
-
-
 
 
 #pragma mark 动图
