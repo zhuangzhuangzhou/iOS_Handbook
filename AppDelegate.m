@@ -1926,6 +1926,11 @@ self.collection.visibleCells[indexPath.row];
 
 
 #pragma mark 文本自适应高度
+//得到一段字的大小
+CGSize size = [text  sizeWithAttributes:
+               @{NSFontAttributeName:
+                     titleLabel.font}];
+
 //计算一段文本在限定宽高内所占矩形大小
 - (CGSize)contentSize{
     CGRect rect = [self.content boundingRectWithSize:CGSizeMake(220, 20000) options:NSStringDrawingUsesFontLeading | NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]} context:nil];
