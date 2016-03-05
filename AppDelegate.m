@@ -613,12 +613,18 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
 - (void)topicButtonChange:(UIButton *)sender{
     
     static NSInteger currentSelectButtonIndex = 0;
-    static  NSInteger previousSelectButtonIndex = 1000;//这个值 注意
+    static  NSInteger previousSelectButtonIndex = 100;//注意
+    
     currentSelectButtonIndex = sender.tag;
     UIButton *currentBtn = (UIButton *)[self.view viewWithTag:currentSelectButtonIndex];;
     [currentBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    currentBtn.titleLabel.font = [UIFont systemFontOfSize:15];
+    currentBtn.userInteractionEnabled = NO;//注意
+    
     UIButton *previousBtn=(UIButton *)[self.view viewWithTag:previousSelectButtonIndex];
     [previousBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    previousBtn.titleLabel.font = [UIFont systemFontOfSize:12];
+    previousBtn.userInteractionEnabled = YES;//注意
     previousSelectButtonIndex = currentSelectButtonIndex;
 }
 
