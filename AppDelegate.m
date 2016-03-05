@@ -2046,7 +2046,7 @@ UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
 self.Cov.alwaysBounceVertical = YES;
 
 
-// 选择一个 （顺便滚动）
+// 选择一个 （并且滚动  到）
 [self.collection selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionTop];
 
 滚动到下一页
@@ -2076,8 +2076,8 @@ self.Cov.alwaysBounceVertical = YES;
 // ** scrollDirection属性
  //设定滚动方向，有UICollectionViewScrollDirectionVertical和UICollectionViewScrollDirectionHorizontal两个值。
  
- ** headerReferenceSize属性与footerReferenceSize属性
- 设定页眉和页脚的全局尺寸，需要注意的是，根据滚动方向不同，header和footer的width和height中只有一个会起作用。如果要单独设置指定区内的页面和页脚尺寸，可以使用下面方法：
+ //** headerReferenceSize属性与footerReferenceSize属性
+ //设定页眉和页脚的全局尺寸，需要注意的是，根据滚动方向不同，header和footer的width和height中只有一个会起作用。如果要单独设置指定区内的页面和页脚尺寸，可以使用下面方法：
  
  - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
  
@@ -2090,39 +2090,27 @@ self.Cov.alwaysBounceVertical = YES;
  
  - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section;
  
- 然后需要实现三种类型的委托：UICollectionViewDataSource, UICollectionViewDelagate和UICollectionViewDelegateFlowLayout。
- 
- @interface ViewController : UIViewController <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource>
+ //然后需要实现三种类型的委托：UICollectionViewDataSource, UICollectionViewDelagate和UICollectionViewDelegateFlowLayout。
  
  
  
 // ** UICollectionViewDataSource
- 
- - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
- 
+
 // 返回collection view里区(section)的个数，如果没有实现该方法，将默认返回1：
  
  - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
  {
  return 2;
  }
- 
- 
- - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
- 
+
  //返回指定区(section)包含的数据源条目数(number of items)，该方法必须实现：
  
  - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
  {
  return 7;
  }
- 
- 
- - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
- 
+
  //返回某个indexPath对应的cell，该方法必须实现：
- 
- 
  - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
  {
  UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"myCell" forIndexPath:indexPath];
@@ -2137,6 +2125,7 @@ self.Cov.alwaysBounceVertical = YES;
  return cell;
  }
 
+
 /**
  *UICollectionViewCell结构上相对比较简单，由下至上：
  
@@ -2147,16 +2136,10 @@ self.Cov.alwaysBounceVertical = YES;
 
  */
 
- 
- 
- 
- 
  - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
  
  为collection view添加一个补充视图(页眉或页脚)
- 
- 
- 
+
  - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
  
  设定页眉的尺寸
@@ -2235,10 +2218,8 @@ self.Cov.alwaysBounceVertical = YES;
  
  
  
- UICollectionViewDelegateFlowLayout
- 
- - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
- 
+ //*********- UICollectionViewDelegateFlowLayout -*********
+
  //设定指定Cell的尺寸
  - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
  {
@@ -2253,12 +2234,8 @@ self.Cov.alwaysBounceVertical = YES;
  }
 ]
  
- 
- - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section;
- 
- 设定collectionView(指定区)的边距
- 
 
+ //设定collectionView(指定区)的边距
  - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
  {
  if(section==0)
@@ -2274,12 +2251,7 @@ self.Cov.alwaysBounceVertical = YES;
  
  
 
-  设定指定区内Cell的最小行距，也可以直接设置UICollectionViewFlowLayout的minimumLineSpacing属性
- - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
- 
-
- 
-
+  //设定指定区内Cell的最小行距，也可以直接设置UICollectionViewFlowLayout的minimumLineSpacing属性
  - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
  {
  if(section==0)
@@ -2293,11 +2265,7 @@ self.Cov.alwaysBounceVertical = YES;
  }
 
  
- 
- - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section;
- 
- 设定指定区内Cell的最小间距，也可以直接设置UICollectionViewFlowLayout的minimumInteritemSpacing属性
- 
+ //设定指定区内Cell的最小间距，也可以直接设置UICollectionViewFlowLayout的minimumInteritemSpacing属性
 
  - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
  {
@@ -2313,10 +2281,8 @@ self.Cov.alwaysBounceVertical = YES;
 
  
  
- UICollectionViewDelegate
- 
- - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
- 
+ //************* UICollectionViewDelegate ***************
+
  //当指定indexPath处的item被选择时触发
  
  - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -2332,9 +2298,6 @@ self.Cov.alwaysBounceVertical = YES;
  - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
  
 
- 
- 
- 
  //下面是三个和高亮有关的方法：
  
  - (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
@@ -2393,7 +2356,7 @@ self.Cov.alwaysBounceVertical = YES;
  
  
 
-
+/****************************/
 //1.初始化collectionView
 UICollectionView *collectionView = [[UICollectionView alloc]initWithFrame:self.view.bounds collectionViewLayout:layout];
 
