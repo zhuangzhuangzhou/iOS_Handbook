@@ -3340,10 +3340,7 @@ Person *aPerson = [[Person alloc]init];
 }
 
 #pragma mark 单例
-
-
 +(id)shareSingleton{
-    
     //和线程锁功能类似（nslock）
     //NSLock
     static dispatch_once_t  onceToken;
@@ -3565,8 +3562,6 @@ View *view = [[[NSBundle mainBundle]loadNibNamed:@"View" owner:nil options:nil] 
      */
 
 
-    
-
 #pragma mark- 实用相关
 
 UINavigationBar * navBar = [UINavigationBar appearance]; //注意这个属性
@@ -3636,7 +3631,6 @@ for（UIView *View in [self.View subviews]）
 #pragma mark SDwebImagge
 
 [[SDImageCache sharedImageCache] clearDisk];
-
 [[SDImageCache sharedImageCache] clearMemory];//可有可无
 //
 //        DLog(@"clear disk");
