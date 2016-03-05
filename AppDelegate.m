@@ -1,5 +1,4 @@
-#define KScreenWidth (CGRectGetWidth([UIScreen mainScreen].bounds)) //屏幕宽度
-#define KScreenHeight (CGRectGetHeight([UIScreen mainScreen].bounds)) //屏幕高度
+
 #define appDelegate ((AppDelegate *)([UIApplication sharedApplication].delegate))
 
 #pragma mark UIWindow
