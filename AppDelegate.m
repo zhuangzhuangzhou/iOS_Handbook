@@ -613,12 +613,18 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
 - (void)topicButtonChange:(UIButton *)sender{
     
     static NSInteger currentSelectButtonIndex = 0;
-    static  NSInteger previousSelectButtonIndex = 1000;//这个值 注意
+    static  NSInteger previousSelectButtonIndex = 100;//注意
+    
     currentSelectButtonIndex = sender.tag;
     UIButton *currentBtn = (UIButton *)[self.view viewWithTag:currentSelectButtonIndex];;
     [currentBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    currentBtn.titleLabel.font = [UIFont systemFontOfSize:15];
+    currentBtn.userInteractionEnabled = NO;//注意
+    
     UIButton *previousBtn=(UIButton *)[self.view viewWithTag:previousSelectButtonIndex];
     [previousBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    previousBtn.titleLabel.font = [UIFont systemFontOfSize:12];
+    previousBtn.userInteractionEnabled = YES;//注意
     previousSelectButtonIndex = currentSelectButtonIndex;
 }
 
@@ -3305,10 +3311,7 @@ Person *aPerson = [[Person alloc]init];
 }
 
 #pragma mark 单例
-
-
 +(id)shareSingleton{
-    
     //和线程锁功能类似（nslock）
     //NSLock
     static dispatch_once_t  onceToken;
@@ -3530,8 +3533,6 @@ View *view = [[[NSBundle mainBundle]loadNibNamed:@"View" owner:nil options:nil] 
      */
 
 
-    
-
 #pragma mark- 实用相关
 
 UINavigationBar * navBar = [UINavigationBar appearance]; //注意这个属性
@@ -3601,7 +3602,6 @@ for（UIView *View in [self.View subviews]）
 #pragma mark SDwebImagge
 
 [[SDImageCache sharedImageCache] clearDisk];
-
 [[SDImageCache sharedImageCache] clearMemory];//可有可无
 //
 //        DLog(@"clear disk");
