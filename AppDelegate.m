@@ -564,7 +564,23 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
     [self.window addSubview:textField];
     //[textField release];
     
-    
+
+#pragma mark UITextField-placehoder 的位置重写
+@interface CustomTextField : UITextField
+//经过这样的方法可以简单快捷地改变textField 文字的位置、大小、颜色等
+@end
+
+@implementation CustomTextField
+
+- (CGRect)textRectForBounds:(CGRect)bounds{
+    return CGRectMake(25, 0, bounds.size.width, bounds.size.height);
+}
+
+- (CGRect)editingRectForBounds:(CGRect)bounds{
+    return CGRectMake(25, 0, bounds.size.width, bounds.size.height);
+}
+
+@end
     
 #pragma mark- UIButton
     
