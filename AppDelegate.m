@@ -73,15 +73,13 @@
      //添加：
      
      //在指定的index 处插入子视图
-     self.window insertSubview:<#(UIView *)#> atIndex:<#(NSInteger)#>
+     self.window insertSubview:(UIView *) atIndex:(NSInteger)
      
      //在指定视图上面添加子视图
-     self.window insertSubview:<#(UIView *)#> aboveSubview:<#(UIView *)#>
+     self.window insertSubview:(UIView *) aboveSubview:(UIView *)
      
      //在指定视图之下添加子视图
-      self.window insertSubview:<#(UIView *)#> belowSubview:<#(UIView *)#>
-     
-     
+      self.window insertSubview:(UIView *) belowSubview:(UIView *)
      
      */
     
@@ -314,6 +312,7 @@ UIViewContentModeBottomRight
     return img;
 }
 
+#pragma mark Core Graphics
 
 
 #pragma mark UIImagePickerController(图片拾取器)
@@ -328,7 +327,6 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
  2.点击按钮时候 实现方法中 创建图片拾取器
  
  3.实现图片拾取器的代理
- 
  
  */
 - (void)handlePickImageAction:(UIButton *)sender{
@@ -361,12 +359,6 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-
-
-
-
-
-
 #pragma mark 动图
    //用可变数组保存图片对象
    NSMutableArray *images = [NSMutableArray array];
@@ -398,7 +390,6 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
 
     }
 
-    
     
     
     
@@ -1935,6 +1926,11 @@ self.collection.visibleCells[indexPath.row];
 
 
 #pragma mark 文本自适应高度
+//得到一段字的大小
+CGSize size = [text  sizeWithAttributes:
+               @{NSFontAttributeName:
+                     titleLabel.font}];
+
 //计算一段文本在限定宽高内所占矩形大小
 - (CGSize)contentSize{
     CGRect rect = [self.content boundingRectWithSize:CGSizeMake(220, 20000) options:NSStringDrawingUsesFontLeading | NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:15]} context:nil];
@@ -1952,6 +1948,27 @@ CGRect textSize = [self.desclabel.text boundingRectWithSize:CGSizeMake(340, 1000
     CGRect textSize = [text boundingRectWithSize:CGSizeMake(340, 10000) options:NSStringDrawingUsesFontLeading | NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:18]} context:nil];
     return textSize.size.height + 20 ;
 }
+
+/*
+//更解耦的方法 - AFN iOS Example
+- (CGFloat)tableView:(__unused UITableView *)tableView
+heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [PostTableViewCell heightForCellWithPost:self.posts[(NSUInteger)indexPath.row]];
+}
+
+//70.0跟计算高度取较大值
++ (CGFloat)heightForCellWithPost:(Post *)post {
+    return (CGFloat)fmaxf(70.0f, (float)[self detailTextHeight:post.text] + 45.0f);
+}
+
+//自适应高度
++ (CGFloat)detailTextHeight:(NSString *)text {
+    CGRect rectToFit = [text boundingRectWithSize:CGSizeMake(240.0f, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:12.0f]} context:nil];
+    return rectToFit.size.height;
+}
+
+*/
 
 
 #pragma mark 图片的局部拉伸
@@ -2199,8 +2216,6 @@ self.Cov.alwaysBounceVertical = YES;
  
  
  //在注册Cell和补充视图时，也可以用新建xib文件的方式：
- 
-
  [self.myCollectionView registerNib:[UINib nibWithNibName:@"MyCollectionCell" bundle:nil] forCellWithReuseIdentifier:@"hxwCell"];
  
  [self.myCollectionView registerNib:[UINib nibWithNibName:@"MySupplementaryView" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"hxwHeader"];
@@ -2221,21 +2236,27 @@ self.Cov.alwaysBounceVertical = YES;
  //*********- UICollectionViewDelegateFlowLayout -*********
 
  //设定指定Cell的尺寸
- - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
- {
- if(indexPath.section==0 && indexPath.row==1)
- {
- return CGSizeMake(50, 50);
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(indexPath.section==0 && indexPath.row==1)
+    {
+        return CGSizeMake(50, 50);
+    }
+    else
+    {
+        return CGSizeMake(75, 30);
+    }
  }
- else
- {
- return CGSizeMake(75, 30);
- }
- }
-]
+
  
 
  //设定collectionView(指定区)的边距
+
+ 
+ - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section;
+
+// 设定collectionView(指定区)的边距
+
  - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
  {
  if(section==0)
@@ -2352,11 +2373,10 @@ self.Cov.alwaysBounceVertical = YES;
  
  [cell setBackgroundColor:[UIColor yellowColor]];
  }
- 
- 
- 
+
 
 /****************************/
+
 //1.初始化collectionView
 UICollectionView *collectionView = [[UICollectionView alloc]initWithFrame:self.view.bounds collectionViewLayout:layout];
 
@@ -2463,7 +2483,6 @@ TabBarController  *tabBar = [[TabBarController alloc]init];
 tabBar.delegate = self;
 
 
-=======================
 //注意一下这两句的区别
 //[self setViewControllers:@[moveieVC,ActivityVC,cinemaVC,userVC]];
 [self setViewControllers:@[activityNav,moveieNav,cinemaNav,userNav]];
@@ -3262,9 +3281,6 @@ NSDictionary * jsonDic = [NSJSONSerialization JSONObjectWithData:data options:NS
     同步请求还是异步请求是通过connection设置的
  
  */
-
-
-
 
 
 #pragma mark 字典-model
