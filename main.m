@@ -205,9 +205,13 @@ int main(int argc, const char * argv[]) {
     
 #pragma mark- NSArray
     
+    
+    //快速求数组最大值
+    [array valueForKeyPath:@"@max.floatValue"]
+    
     //创建
     NSArray *arr = [[NSArray alloc]initWithObjects: @1, @2, @"zz", @5.2, @7, nil];
-    NSLog(@"%@",arr);
+   
     
     //便利构造器 列表结尾标志nil不能省略，否则会导致crash，参数列表中的对象用逗号隔开
     NSArray *arr1 = [NSArray arrayWithObjects:@1,@2,@"zhouqiang", nil];
