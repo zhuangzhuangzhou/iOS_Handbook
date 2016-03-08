@@ -567,7 +567,7 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
 
 #pragma mark UITextField-placehoder 的位置重写
 @interface CustomTextField : UITextField
-//经过这样的方法可以简单快捷地改变textField 文字的位置、大小、颜色等
+//经过这样的方法可以简单快捷地改变textField（包括placehoder） 文字的位置、大小、颜色等
 @end
 
 @implementation CustomTextField
@@ -581,6 +581,53 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
 }
 
 @end
+
+
+#pragma mark 收起键盘
+
+//简单粗暴 代替tap手势
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [self.view endEditing:YES];
+}
+
+
+/*
+ 1 文件头引入代理UITextFieldDelegate
+ 2 设置代理对象 textField.delegate = self;
+ 3 重写实现方法- (BOOL)textFieldShouldReturn:(UITextField *)textField
+ */
+
+
+- (BOOL) textFieldShouldReturn:(UITextField *)textField{
+    //调试工具 （执行 函数的行数  函数）
+    //NSLog(@"%d__%s",__LINE__,__func__);
+    [textField resignFirstResponder];
+    return YES;
+}
+
+
+- (BOOL)textFieldShouldReturn1:(UITextField *)textField{
+    [[self.window viewWithTag:120] resignFirstResponder];
+    [[self.window viewWithTag:121] becomeFirstResponder];
+    [textField resignFirstResponder];
+
+    return YES;
+    //简便方法
+    [self.view endediting YES];
+}
+
+//手势识别 + 上下判断
+- (void)handleSwipeGesture:(UISwipeGestureRecognizer *)sender{
+    if ([[self.window viewWithTag:120] isFirstResponder]) {
+        [[self.window viewWithTag:120] resignFirstResponder];
+        [[self.window viewWithTag:121] becomeFirstResponder];
+    }else{
+        [[self.window viewWithTag:121] resignFirstResponder];
+    }
+}
+
+
+
     
 #pragma mark- UIButton
     
@@ -859,53 +906,6 @@ _webView.delegate = self;
 }
 
 
-
-
-
-
-#pragma mark- ***功能函数***
-
-#pragma mark 收起键盘
-
-/*
- 1 文件头引入代理UITextFieldDelegate
- 2 设置代理对象 textField.delegate = self;
- 3 重写实现方法- (BOOL)textFieldShouldReturn:(UITextField *)textField
- */
-
-
-- (BOOL) textFieldShouldReturn:(UITextField *)textField{
-    //调试工具 （执行 函数的行数  函数）
-    //NSLog(@"%d__%s",__LINE__,__func__);
-    [textField resignFirstResponder];
-    
-    
-    return YES;
-}
-
-- (BOOL)textFieldShouldReturn1:(UITextField *)textField{
-    [[self.window viewWithTag:120] resignFirstResponder];
-    [[self.window viewWithTag:121] becomeFirstResponder];
-    [textField resignFirstResponder];
-    
-    return YES;
-    
-    //简便方法
-    [self.view endediting YES];
-}
-
-//手势识别 + 上下判断
-- (void)handleSwipeGesture:(UISwipeGestureRecognizer *)sender{
-    if ([[self.window viewWithTag:120] isFirstResponder]) {
-        [[self.window viewWithTag:120] resignFirstResponder];
-        [[self.window viewWithTag:121] becomeFirstResponder];
-    }else{
-        [[self.window viewWithTag:121] resignFirstResponder];
-    }
-}
-    
-    
-    }
 
 #pragma mark 按钮功能 + 计时器
 
