@@ -19,32 +19,31 @@ UIKIT_EXTERN//简单来说，就是将函数修饰为兼容以往C编译方式�
     [self.window makeKeyAndVisible];//让window 显示在屏幕上
 
 #pragma mark- UIView
-    
-    /*
-     创建：
-     1.开辟空间并初始化视图（初始化时，给出视图位置和大小）
-     2.对视图做相应的设置（背景颜色、阿尔法值等）
-     3.将视图添加到window上显示
-     4.释放视图对象
-     */
-    
-    UIView * aView = [[UIView alloc]initWithFrame:CGRectMake((CGRectGetWidth(self.window.frame) - 150) / 2, (CGRectGetHeight(self.window.frame) - 100) / 2, 150, 100)];
-    
-    //背景色
-    aView.backgroundColor = [UIColor redColor];
-    
-    //透明度
-    aView.alpha = 0.5;
-    
-    //是否隐藏，默认否
-    aView.hidden = NO;
-    
-    //tag
-    aView.tag = 100;
-    UIView *bView = [self.window viewWithTag:100];
-    
-    //设置到window中心
-    aView.center = self.window.center;
+
+//----------------------坐标转换------------------------
+// 将像素point由point所在视图转换到目标视图view中，返回在目标视图view中的像素值
+- (CGPoint)convertPoint:(CGPoint)point toView:(UIView *)view;
+// 将像素point从view中转换到当前视图中，返回在当前视图中的位置
+- (CGPoint)convertPoint:(CGPoint)point fromView:(UIView *)view;
+// 将rect由rect所在视图转换到目标视图view中，返回在目标视图view中的rect
+- (CGRect)convertRect:(CGRect)rect toView:(UIView *)view;
+// 将rect从view中转换到当前视图中，返回在当前视图中的rect
+- (CGRect)convertRect:(CGRect)rect fromView:(UIView *)view;
+
+/*
+例把UITableViewCell中的subview(btn)的frame转换到 controllerA中
+// controllerA 中有一个UITableView, UITableView里有多行UITableVieCell，cell上放有一个button
+// 在controllerA中实现:
+CGRect rc = [cell convertRect:cell.btn.frame toView:self.view];
+或
+CGRect rc = [self.view convertRect:cell.btn.frame fromView:cell];
+// 此rc为btn在controllerA中的rect
+
+或当已知btn时：
+CGRect rc = [btn.superview convertRect:btn.frame toView:self.view];
+或
+CGRect rc = [self.view convertRect:btn.frame fromView:btn.superview];
+*/
     
 #pragma mark 角半径 圆角属性
     //设置角半径
@@ -582,6 +581,96 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
 
 @end
 
+#pragma mark 键盘通知
+/*
+ 键盘的通知：
+ UIKeyboardWillShowNotification // 键盘即将显示
+ UIKeyboardDidShowNotification // 键盘显示完毕
+ UIKeyboardWillHideNotification // 键盘即将隐藏
+ UIKeyboardDidHideNotification // 键盘隐藏完毕
+ UIKeyboardWillChangeFrameNotification // 键盘的位置尺寸即将发生改变
+ UIKeyboardDidChangeFrameNotification // 键盘的位置尺寸改变完毕
+ */
+
+
+/*
+[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+[[NSNotificationCenter defaultCenter ] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+*/
+
+//键盘显示事件
+- (void) keyboardWillShow:(NSNotification *)notification {
+
+    CGFloat kbHeight = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
+
+    UIView *currentView = [self findFirstResponderBeneathView:self.view];//用到找第一响应者（本文有）
+    if (currentView) {
+        //滚动多少 = [currentView 的下边Y值(即y+h)] 减去 [键盘升起y值(屏幕高 - 键盘高)] 加 [一定间隔（美观）]
+        CGFloat offset = (currentView.frame.origin.y + currentView.frame.size.height+INTERVAL_KEYBOARD) - (self.View.frame.size.height - kbHeight);
+        //动画时间
+        double duration = [[notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+        //大于0 需要滚动
+        if(offset > 0) {
+            [UIView animateWithDuration:duration animations:^{
+                self.view.frame = CGRectMake(0.0f, -offset, self.View.frame.size.width, self.scrollView.frame.size.height);
+            }];
+        }
+    }
+}
+
+///键盘消失事件
+- (void) keyboardWillHide:(NSNotification *)notification {
+    // 键盘动画时间
+    double duration = [[notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+
+    //视图下沉恢复原状
+    [UIView animateWithDuration:duration animations:^{
+        self.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    }];
+}
+
+
+//scrollView 用这个【http:~~~~//blog.csdn.net/woaifen3344/article/details/38382197】
+- (void)keyboardWillShow:(NSNotification *)notification {
+    self.previousOffset = self.scrollView.contentOffset;//需要定义一个上一次偏移量
+    NSDictionary *userInfo = [notification userInfo];
+
+    CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    // convert keyboard rect from window coordinate to scroll view coordinate
+    keyboardRect = [self.scrollView convertRect:keyboardRect fromView:nil];
+    // get keybord anmation duration
+    NSTimeInterval animationDuration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+
+    // get first responder textfield
+    UIView *currentResponder = [self findFirstResponderBeneathView:self.scrollView];
+    if (currentResponder != nil) {
+        // convert textfield left bottom point to scroll view coordinate
+        CGPoint point = [currentResponder convertPoint:CGPointMake(0, currentResponder.frame.size.height) toView:self.scrollView];
+        // 计算textfield左下角和键盘上面20像素 之间是不是差值
+        float scrollY = point.y - (keyboardRect.origin.y - 20);
+        if (scrollY > 0) {
+            [UIView animateWithDuration:animationDuration animations:^{
+                //移动textfield到键盘上面20个像素
+                self.scrollView.contentOffset = CGPointMake(self.scrollView.contentOffset.x, self.scrollView.contentOffset.y + scrollY);
+            }];
+        }
+    }
+    self.scrollView.scrollEnabled = NO;
+    return;
+}
+
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    NSDictionary *userInfo = [notification userInfo];
+    NSTimeInterval animationDuration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    [UIView animateWithDuration:animationDuration animations:^{
+        self.scrollView.contentOffset = self.previousOffset;
+    }];
+    self.scrollView.scrollEnabled = YES;
+
+    return;
+}
+
 
 #pragma mark 收起键盘
 
@@ -990,6 +1079,20 @@ _webView.delegate = self;
 
 self.view.userInteractionEnabled = YES;
 
+#pragma mark 找到第一响应者
+- (UIView *)findFirstResponderBeneathView:(UIView *)view{
+    for (UIView *childView in view.subviews) {
+        if ([childView respondsToSelector:@selector(isFirstResponder)] && [childView isFirstResponder]) {
+            return childView;
+        }
+
+        UIView *resultView = [self findFirstResponderBeneathView:childView];
+        if (resultView) {
+            return resultView;
+        }
+    }
+    return nil;
+}
 
 #pragma mark UITouch
 
