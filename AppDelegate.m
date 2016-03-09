@@ -1,5 +1,4 @@
-#define KScreenWidth (CGRectGetWidth([UIScreen mainScreen].bounds)) //屏幕宽度
-#define KScreenHeight (CGRectGetHeight([UIScreen mainScreen].bounds)) //屏幕高度
+
 #define appDelegate ((AppDelegate *)([UIApplication sharedApplication].delegate))
 
 UIKIT_EXTERN//简单来说，就是将函数修饰为兼容以往C编译方式的、具有extern属性(文件外可见性)、public修饰的方法或变量库外仍可见的属性
