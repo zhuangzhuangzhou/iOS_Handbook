@@ -52,6 +52,8 @@ int main(int argc, const char * argv[]) {
     NSLog(@"%@",NSStringFromRange(range));//NSRange 是结构体类型，起始下标location，长度length，如果存在，length不为0
     
 #pragma mark 字符串截取
+
+    //字符串截取到第n位  （substringToIndex: n）(第n 位不算再内)
     NSString *subStr1 = [str1 substringFromIndex:3];//从给定下标开始，包含给定下标
     NSString *subStr2 = [str1 substringToIndex:3];//从0开始，返回到给定下标-1（不包含给定下标）
     
