@@ -99,7 +99,7 @@ int main(int argc, const char * argv[]) {
     [mutableStr1 deleteCharactersInRange:NSMakeRange(8, 1)];
     NSLog(@"%@",mutableStr1);
     
-#pragma mark 截取字符串空格的方法
+#pragma mark 截取字符串空格的方法 （去掉两端，去掉全部用替换）
     - (NSString *)trim:(NSString *)str{
         str = [str stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         return [str lowercaseString];
@@ -722,13 +722,14 @@ int main(int argc, const char * argv[]) {
     NSLog(@"%f",timeStamp);
     
 #pragma mark 获取当前系统时间
+
+    //获取系统时间
     NSDate *date = [NSDate date];
     NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
     [formatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
     NSString *localTime = [formatter stringFromDate:date];
     //NSLog(@"~~~~~~%@",localTime);
-    
-    
+
     +(NSString*)getCurrentDate
     {
         NSString *result = @"";
@@ -747,8 +748,16 @@ int main(int argc, const char * argv[]) {
     [formatter setDateFormat:@"yyyy-mm-dd HH:mm:ss"];
     NSString *timeStr = [formatter stringFromDate:date];
     
-    
-    
+
+    //字符串转时间
+    - (NSDate *)getDateWithString:(NSString *)str{
+        NSDateFormatter *inputFormatter = [[NSDateFormatter alloc] init] ;
+        [inputFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_CN"] ];
+        [inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+        NSDate *startDate = [inputFormatter dateFromString:str];
+        return startDate;
+    }
+
 #pragma mark NSDateformatter
     
     /*
