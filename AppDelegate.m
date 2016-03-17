@@ -2651,7 +2651,7 @@ UINavigationController *navi = [[UINavigationController alloc]initWithRootViewCo
 //将导航控制器指定为window的跟视图控制器
 self.window.rootViewController = navi;
 
-
+self.navigationItem.titleView = self.mysearchBar;//导航条上有搜索框
 
 #pragma mark  NavigationBar 导航条
 
