@@ -721,7 +721,7 @@ int main(int argc, const char * argv[]) {
     NSTimeInterval timeStamp = [date2 timeIntervalSince1970];
     NSLog(@"%f",timeStamp);
     
-#pragma mark 获取当前系统时间
+#pragma mark
 
     //获取系统时间
     NSDate *date = [NSDate date];

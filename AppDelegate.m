@@ -515,7 +515,11 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
     
     //占位文字
     textField.placeholder = @"请输入账号";
-    
+
+
+//实时监听textField 内容的变化
+[self.textField3 addTarget:self action:@selector(textChanged:) forControlEvents:UIControlEventEditingChanged];
+
 #pragma mark UITextField-左右视图
     
     /*
