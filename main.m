@@ -723,7 +723,7 @@ int main(int argc, const char * argv[]) {
     
 #pragma mark
 
-    //获取系统时间
+    //获取系统时间(字符串)
     NSDate *date = [NSDate date];
     NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
     [formatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
@@ -736,13 +736,22 @@ int main(int argc, const char * argv[]) {
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:@"yyyyMMddHHmmss"];
         result = [formatter stringFromDate:[NSDate date]];
-        
         return  result;
     }
-    
+
+
+    //获取系统时间(NSDate)
+    [NSTimeZone systemTimeZone];//时区
+    NSTimeInterval timeInterval = [[NSTimeZone systemTimeZone] secondsFromGMTForDate:[NSDate date]];//当前时区 和 (某date)时区的 差()
+    NSTimeInterval time2 =[[NSTimeZone systemTimeZone] secondsFromGMT];//当前时区 和 零时区的 差
+
+    NSDate *date = [NSDate dateWithTimeIntervalSinceNow:0];//零时区 同[NSDate date]
+    NSDate *dateNow = [NSDate dateWithTimeIntervalSinceNow:timeInterval];//当前系统时间
+
+
     
     //时间戳转换时间
-    NSTimeInterval timeInterval = [time doubleValue] + 288000;
+    NSTimeInterval timeInterval = [time doubleValue] //?+ 288000;
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:timeInterval];
     NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
     [formatter setDateFormat:@"yyyy-mm-dd HH:mm:ss"];
