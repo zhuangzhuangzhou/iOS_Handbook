@@ -837,6 +837,22 @@ self.button.titleLabel.font = [UIFont systemFontOfSize:11];
 [self.button setTitle:@"专题" forState:UIControlStateNormal];
 self.button.userInteractionEnabled = NO;//关交互
 
+//一个循环创建多行多列按钮
+- (void)getCoalKindButton{
+
+    for (int i = 0; i <= self.coalKindArray.count ; i ++) {
+        DDButton *button = [DDButton buttonWithType:UIButtonTypeCustom];
+
+        //i 取余 是第几个 i除以 是第几行 5 (每行几个 列数)
+            button.frame = CGRectMake((i % 5) * (SCREENWIDE / 5), (i / 5) * (HEIGHTBUTTON + 0.5), SCREENWIDE / 5 - 0.5, HEIGHTBUTTON - 0.5);
+            [button setTitle:self.coalKindArray[i] forState:UIControlStateNormal];
+
+    }
+}
+
+
+
+
 #pragma mark UIButton-添加点击事件
     
     //对象 事件 动作
