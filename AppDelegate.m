@@ -2905,13 +2905,16 @@ self.navigationController.interactivePopGestureRecognizer.delegate = self;
  1.声明block函数(变量) 注意 block作为属性 是copy
  @property (nonatomic, copy) void(^passValueBlock)(NSString *);
  
- 2.给block属性赋值(跳转事件触发时)
+ 
+ 2.通过block传值(返回事件触发时)
+ self.passValueBlock(textFeild.text);
+ 
+ 3.给block属性赋值(跳转事件触发时)[跳转回调]
  dateVC.passValueBlock =^(NSString *text){
  label.text = text;
  };
  
- 3.通过block传值(返回事件触发时)
- self.passValueBlock(textFeild.text);
+
  */
 
 Block类型定义：返回值类型(^ 变量名)(参数列表)（注意Block也是一种类型）；
