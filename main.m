@@ -1,5 +1,7 @@
-    
-    
+unichar c = [sender.titleLabel.text characterAtIndex:0];
+if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
+    NSLog(@"这是汉字");
+}
 #pragma mark- NSString
     
     //创建指定格式的字符串对象
