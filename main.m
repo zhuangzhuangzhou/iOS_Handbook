@@ -223,23 +223,23 @@
     
     //2.获取一个指定数组对象的元素个数
     NSInteger count = [arr4 count];
-    NSLog(@"%ld",count);
+
     
     //数组的语法糖形式,数组的写法为@[对象列表（逗号分隔）]
     NSArray *arr5 = @[@1 ,@2 ,@3, @"a"];
-    NSLog(@"%@",arr5);
+
     
     
     for (int i = 0; i < [arr5 count]; i ++) {
         NSLog(@"%@",[arr5 objectAtIndex:i]);
         //数组获取指定下标对象的语法糖
-        NSLog(@"%@",arr5[i]);
+
     }
     
     //获取指定对象在数组中的下标
     //如果该数组存在指定对象，返回的结果在 [0 , count) 之间，否则返回长整型的最大值
     NSInteger index = [arr5 indexOfObject:@"a"];
-    NSLog(@"%ld",index);
+
     
     //判断某个指定对象是否包含在数组中
     BOOL result11 = [arr5 containsObject:@666];
@@ -247,11 +247,11 @@
     
     //为不可变数组添加对象，返回一个新数组，不改变原来数组
     NSArray *arr6 = [arr5 arrayByAddingObject:@"cc"];
-    NSLog(@"arr6:%@",arr6);
+
     
     //把指定数组中的所有对象按照顺序添加给调用方法的原数组，产生新的结果数组
     NSArray *arr7 = [arr6 arrayByAddingObjectsFromArray:@[@99, @88]];
-    NSLog(@"arra7:%@",arr7);
+
     
     
 #pragma mark 可变数组
