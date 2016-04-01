@@ -1,5 +1,7 @@
-    
-    
+unichar c = [sender.titleLabel.text characterAtIndex:0];
+if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
+    NSLog(@"这是汉字");
+}
 #pragma mark- NSString
     
     //创建指定格式的字符串对象
@@ -264,48 +266,46 @@
     
     //---添加对象---
     [mutableArr2 addObject:@1];
-    NSLog(@"%@",mutableArr2);
+
     
     //把一个给定的数组中的所有对象添加到可变数组中
     [mutableArr2 addObjectsFromArray:@[@2, @3, @4]];
-    NSLog(@"%@",mutableArr2);
-    
+
     
     //---插入、替换、交换 对象---
     //给指定下标插入一个对象
     [mutableArr2 insertObject:@"hanPig" atIndex:1];
-    NSLog(@"%@",mutableArr2);
+
     
     //替换指定下标的对象
     [mutableArr2 replaceObjectAtIndex:2 withObject:@"hanPiPi"];
-    NSLog(@"%@",mutableArr2);
+
     //替换指定下标的对象 语法糖形式
     mutableArr2[2] =@"zhuzhu";
-    NSLog(@"%@",mutableArr2);
+
     
     //交换两个指定下标的对象
     [mutableArr2 exchangeObjectAtIndex:1 withObjectAtIndex:3];
-    NSLog(@"%@",mutableArr2);
+
     
     id temp = mutableArr2[1];
     mutableArr2[1] = mutableArr2[3];
     mutableArr2[3] = temp;
-    NSLog(@"%@",mutableArr2);
+
     
     //删除指定下标的数组元素
     [mutableArr2 removeObjectAtIndex:1];
-    NSLog(@"%@",mutableArr2);
+
     
     //删除数组所有元素，但是数组对象依然存在，方便二次保存新数组元素
     [mutableArr2 removeAllObjects];
-    NSLog(@"%@",mutableArr2);
+
     
     
     //用关键字符串切分原字符串，生成一个由子字符串组成的数组并返回
     NSString *str = @"haha|hehe";
     NSArray *substrs = [str componentsSeparatedByString:@"|"];
-    NSLog(@"%@",substrs);
-    
+
     
     
     
@@ -344,36 +344,25 @@
     
     NSArray *originalArr = @[@15,@66, @2];
     NSArray *sortedArr = [originalArr sortedArrayUsingSelector:@selector(compare:)];
-    NSLog(@"%@",sortedArr);
+
     
     //NSNumber 类中的比较方法，返回比较结果-1代表 调用方法的对象比参数对象小 0代表相同， 1代表调用方法的对象比参数对象大
     NSComparisonResult cmpRes = [@9 compare :@8];
-    NSLog(@"%ld",cmpRes);
-    
+
     
     
         NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:originalArr];
         objc_sorted_array(mutableArray, @selector(compare:));
     
-        NSLog(@"%@",mutableArray);
-    
 
-    
-    
-    
-    
-
-    
-    
-    
     
 #pragma mark- NSDictionary
 #pragma mark 添加键和值  以及其 便利构造器
     NSDictionary *dict1 = [[NSDictionary alloc]initWithObjectsAndKeys:@"zhouqing",@"name",@"25",@"age", nil];
-    NSLog(@"%@",dict1);
+
     
     NSDictionary *dict2 = [NSDictionary dictionaryWithObjectsAndKeys:@"hanPig", @"name", @"luolin", @"name", nil];//重复的键值对不会被保存在字典中
-    NSLog(@"%@",dict2);
+
     
     NSDictionary *dic = @{@"key1":@"value1",@"key2":@"value2"};
     
@@ -382,14 +371,11 @@
     NSArray *allkeys = @[@1, @2];
     NSArray *allValue = @[@"shuxue",@"yuwen"];//两个数组长度必须相等
     NSDictionary *dict3 = [NSDictionary dictionaryWithObjects:allValue forKeys:allkeys];
-    NSLog(@"%@",dict3);
+
     
 #pragma mark 获取字典的键和值
     
     NSArray *keys = [dict1 allKeys];
-    NSLog(@"%@",keys);
-    
-    
     
 #pragma mark 键/值的互相查找
     
@@ -799,7 +785,7 @@
     //[formatter setTimeZone:[NSTimeZone timeZoneWithName:@"Asia/Bangkok"]];
     [formatter setDateFormat:@"y-MM-dd HH:mm:ss zz"];
     NSString *timeZone = [formatter stringFromDate:date1];
-    NSLog(@"%@",timeZone);
+
     
 #pragma mark- NSTimer
     
