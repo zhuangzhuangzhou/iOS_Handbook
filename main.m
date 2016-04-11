@@ -1,6 +1,6 @@
 unichar c = [sender.titleLabel.text characterAtIndex:0];
 if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
-    NSLog(@"这是汉字");
+    //NSLog(@"这是汉字");
 }
 #pragma mark- NSString
     
@@ -18,36 +18,31 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     
 #pragma mark 根据下标获取字符
     for (int i = 0; i < length; i ++) {
-        NSLog(@"%c",[str1 characterAtIndex:i]);
+        //NSLog(@"%c",[str1 characterAtIndex:i]);
     }
     
 #pragma mark 大、小字符转换
     NSString *uperStr = [str1 uppercaseString];
-    NSLog(@"%@",uperStr);
-    
+
     NSString *lowerStr = [str1 lowercaseString];
-    NSLog(@"%@",lowerStr);
     
 #pragma mark 首字母大写
     NSString *capitalStr = [str1 capitalizedString];
-    NSLog(@"%@",capitalStr);
     
 #pragma mark 字符串拼接
     NSString * str3 = [str1 stringByAppendingString:str2];
-    NSLog(@"%@",str3);
     
     NSString *str4 = [str1 stringByAppendingFormat:@" %d + %d",2 , 3];
-    NSLog(@"%@",str4);
     
 #pragma mark 是否包含前缀、后缀
     BOOL result = [@"http://www.baidu.com"hasPrefix:@"http"];
-    NSLog(@"%@",result ? @"YES" : @"NO");
+    //NSLog(@"%@",result ? @"YES" : @"NO");
     BOOL result1 = [@"http://www.baidu.com"hasSuffix:@"www"];
-    NSLog(@"%@", result1 ? @"YES" : @"NO");
+    //NSLog(@"%@", result1 ? @"YES" : @"NO");
     
 #pragma mark 搜索字符串范围
     NSRange range = [str1 rangeOfString:@"old"];
-    NSLog(@"%@",NSStringFromRange(range));//NSRange 是结构体类型，起始下标location，长度length，如果存在，length不为0
+    //NSLog(@"%@",NSStringFromRange(range));//NSRange 是结构体类型，起始下标location，长度length，如果存在，length不为0
     
 #pragma mark 字符串截取
 
@@ -57,17 +52,17 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     
     NSRange subRange = NSMakeRange(2, 4);
     NSString * subStr3 = [str1 substringWithRange:subRange];//根据指定范围截取
-    NSLog(@"%@ /%@ /%@",subStr1,subStr2,subStr3);//old are you /How /w ol
+    //NSLog(@"%@ /%@ /%@",subStr1,subStr2,subStr3);//old are you /How /w ol
     
 #pragma mark 字符串替换
     NSString * resultStr = [str1 stringByReplacingOccur rencesOfString:@"old" withString:@"hehe"];
-    NSLog(@"%@",resultStr);
+    //NSLog(@"%@",resultStr);
     
 #pragma mark 字符串对象和基本数据类型的转换
     
     NSString *numStr = @"3.1415";
     float num1 = [numStr floatValue];
-    NSLog(@"%f",num1);
+    //NSLog(@"%f",num1);
     /*@property (readonly) double doubleValue;
      @property (readonly) float floatValue;
      @property (readonly) int intValue;
@@ -95,16 +90,14 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     
     //删除
     [mutableStr1 deleteCharactersInRange:NSMakeRange(8, 1)];
-    NSLog(@"%@",mutableStr1);
+    //NSLog(@"%@",mutableStr1);
     
 #pragma mark 截取字符串空格的方法 （去掉两端，去掉全部用替换）
-    - (NSString *)trim:(NSString *)str{
-        str = [str stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        return [str lowercaseString];
-    }
-    
-    
-    
+- (NSString *)trim:(NSString *)str{
+    str = [str stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    return [str lowercaseString];
+}
+
 #pragma mark- NSRUL
     
     //URL中文转码
@@ -177,7 +170,7 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     
     //NSNumber 类中的比较方法，返回比较结果-1代表 调用方法的对象比参数对象小 0代表相同， 1代表调用方法的对象比参数对象大
     NSComparisonResult cmpRes = [@9 compare :@8];
-    NSLog(@"%ld",cmpRes);
+    //NSLog(@"%ld",cmpRes);
     
     
 #pragma mark NSNumber 初始化语法糖
@@ -198,8 +191,7 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
      NSValue对象是用来存储一个C或者Objective－C数据的简单容器。它可以保存任意类型的数据，比如int，float，char，当然也可以是指pointers, structures, and object ids。NSValue类的目标就是允许以上数据类型的数据结构能够被添加到集合里，例如那些需要其元素是对象的数据结构，如NSArray或者NSSet的实例。需要注意的是NSValue对象一直是不可枚举的。
      
      */
-    
-    
+
     
     int pm2_5 = [string intValue];
     
@@ -230,12 +222,10 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     //数组的语法糖形式,数组的写法为@[对象列表（逗号分隔）]
     NSArray *arr5 = @[@1 ,@2 ,@3, @"a"];
 
-    
-    
-    for (int i = 0; i < [arr5 count]; i ++) {
-        NSLog(@"%@",[arr5 objectAtIndex:i]);
-        //数组获取指定下标对象的语法糖
 
+    for (int i = 0; i < [arr5 count]; i ++) {
+        //NSLog(@"%@",[arr5 objectAtIndex:i]);
+        //数组获取指定下标对象的语法糖
     }
     
     //获取指定对象在数组中的下标
@@ -254,8 +244,7 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     //把指定数组中的所有对象按照顺序添加给调用方法的原数组，产生新的结果数组
     NSArray *arr7 = [arr6 arrayByAddingObjectsFromArray:@[@99, @88]];
 
-    
-    
+
 #pragma mark 可变数组
     NSMutableArray *mutableArr1 = [[NSMutableArray alloc]init ];
     
@@ -349,13 +338,11 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     //NSNumber 类中的比较方法，返回比较结果-1代表 调用方法的对象比参数对象小 0代表相同， 1代表调用方法的对象比参数对象大
     NSComparisonResult cmpRes = [@9 compare :@8];
 
-    
-    
-        NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:originalArr];
-        objc_sorted_array(mutableArray, @selector(compare:));
+
+    NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:originalArr];
+    objc_sorted_array(mutableArray, @selector(compare:));
     
 
-    
 #pragma mark- NSDictionary
 #pragma mark 添加键和值  以及其 便利构造器
     NSDictionary *dict1 = [[NSDictionary alloc]initWithObjectsAndKeys:@"zhouqing",@"name",@"25",@"age", nil];
@@ -363,7 +350,6 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     
     NSDictionary *dict2 = [NSDictionary dictionaryWithObjectsAndKeys:@"hanPig", @"name", @"luolin", @"name", nil];//重复的键值对不会被保存在字典中
 
-    
     NSDictionary *dic = @{@"key1":@"value1",@"key2":@"value2"};
     
 #pragma mark 传入数组创建字典
@@ -381,16 +367,16 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     
     
     NSString *currentValue = [dict1 objectForKey:@"name"];//根据键返回值
-    NSLog(@"%@",currentValue);
+    //NSLog(@"%@",currentValue);
     
     
     NSArray *keysOfObject = [dict1 allKeysForObject:@"zhouqing"];//根据值返回键(因为值有可能重复，所以会返回多个键 allKeys)
-    NSLog(@"%@",keysOfObject);
+    //NSLog(@"%@",keysOfObject);
 
 #pragma mark 可变字典
    
     NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"95", @"score", nil];
-    NSLog(@"%@",mutableDict);
+    //NSLog(@"%@",mutableDict);
     
     //将不可变字典变为可变字典
     NSMutableDictionary *mutableDict1 = [NSMutableDictionary dictionaryWithDictionary:dict1];
@@ -406,7 +392,7 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     [mutableDict removeObjectForKey:@"lesson"];
     [mutableDict removeObjectsForKeys:@[@"lesson", @"score" ]];
     [mutableDict removeAllObjects];
-    NSLog(@"%@",mutableDict);
+    //NSLog(@"%@",mutableDict);
     
     
 #pragma mark- 集合
@@ -439,31 +425,23 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     NSMutableSet *mutableSet = [NSMutableSet setWithSet:set4];
     //集合添加对象
     [mutableSet addObject:@8];
-    NSLog(@"%@",mutableSet);
-    
+
     [mutableSet addObjectsFromArray:@[@9,@6,@"linpig"]];
-    NSLog(@"%@",mutableSet);
     
     //移除对象
     [mutableSet removeObject:@2];
-    NSLog(@"%@",mutableSet);
     
     [mutableSet removeAllObjects];
-    NSLog(@"%@",mutableSet);
+
 #pragma mark 计数集合-countSet 添加了记数功能
     NSCountedSet *countSet = [NSCountedSet setWithSet:set4];
     [countSet addObjectsFromArray:@[@1,@1,@2,@2]];
-    NSLog(@"%ld",[countSet countForObject:@1]);
-    NSLog(@"%@",countSet);
+    //NSLog(@"%ld",[countSet countForObject:@1]);
 
 #pragma mark 有序集合
     NSOrderedSet *set = [NSOrderedSet orderedSetWithArray:array];
     
-    
-    
-    
-    
-    
+
 #pragma mark- 数组排序
     
     /***
@@ -480,22 +458,22 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
 
     NSArray *arr01 = @[@45,@28,@9,@3,@33];
     NSArray *arrRes =  [arr1 sortedArrayUsingSelector:@selector(compare:)];//两个相比 结果为1(降序)时交换（这种只能升序）
-    NSLog(@"%@",arrRes);
+    //NSLog(@"%@",arrRes);
 
     
     NSArray *sotredImArr = [originalArr sortedArrayUsingSelector:@selector(compare:)];
-    NSLog(@"%@",sotredImArr);
+    //NSLog(@"%@",sotredImArr);
     
     NSArray *numerStrArr = @[@"1",@"12", @"3", @"35", @"22" , @"21"];
     NSArray *numerSortedArr = [numerStrArr sortedArrayUsingSelector:@selector(compare:)];
-    NSLog(@"%@",numerSortedArr);
+    //NSLog(@"%@",numerSortedArr);
     
 #pragma mark sortedArrayUsingComparator
     
     NSArray *arrRes1 = [arr1 sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
         return [obj2 compare:obj1];
     }];
-    NSLog(@"%@",arrRes1);
+    //NSLog(@"%@",arrRes1);
     
     
     //利用block 重写compare( sortedArrayUsingComparator 的内部实现)
@@ -504,22 +482,14 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     };
     
     NSArray *arrRes2 = [arr1 sortedArrayUsingComparator:decBlock];
-    NSLog(@"%@",arrRes2);
+    //NSLog(@"%@",arrRes2);
     
-    
-    
-    
+
     
     NSArray *originalImArr = @[@1,@4,@12,@5,@6];
-    NSLog(@"%@",originalImArr);
+    //NSLog(@"%@",originalImArr);
     
-  
 
-
-    
-    
-    
-    
     
     //    /*============================*/
     //    Number *aNumber = [Number numberWithInt:35];
@@ -549,11 +519,8 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
         return a > b ? a : b;
     };
     
-    NSLog(@"%d",maxBlock(3,5));
-    
-    
-    
-    
+    //NSLog(@"%d",maxBlock(3,5));
+
 #pragma mark 利用block重写compare
     //相当于 重写 sortedArrayUsingSelector 里的compare
     NSComparisonResult (^ascBlock)(NSNumber *,NSNumber *) = ^(NSNumber *num1,NSNumber *num2){
@@ -561,21 +528,21 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     };
     //数组的block排序方法
     NSArray *blockSortedArr = [originalImArr sortedArrayUsingComparator:ascBlock];
-    NSLog(@"%@",blockSortedArr);
+    //NSLog(@"%@",blockSortedArr);
     
     
     NSComparisonResult (^desBlock)(NSNumber *,NSNumber *) = ^(NSNumber *num1,NSNumber *num2){
         return [num2 compare:num1];
     };
     NSArray *blockSortArr2 = [originalImArr sortedArrayUsingComparator:desBlock];
-    NSLog(@"%@",blockSortArr2);
+    //NSLog(@"%@",blockSortArr2);
     
     
 #pragma mark sortedArrayUsingComparator(封装block)
     NSArray *blockSotr = [originalImArr sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
         return [obj2 compare:obj1];
     }];
-    NSLog(@"%@",blockSotr);
+    //NSLog(@"%@",blockSotr);
     
     
     //比较字符型数组
@@ -585,8 +552,7 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
         return leftNum < rightNum ?
         NSOrderedAscending : NSOrderedDescending;
     }];
-    
-    NSLog(@"%@",blockStr);
+    //NSLog(@"%@",blockStr);
     
     
 #pragma mark sortDescriptorWithKey: ascending:
@@ -599,25 +565,15 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     
     NSSortDescriptor *nameDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:NO];
     NSSortDescriptor *ageDescripotor = [NSSortDescriptor sortDescriptorWithKey:@"age" ascending:YES];
-    NSLog(@"%@",nameDescriptor);//LOG:(name, descending, compare:)
+    //NSLog(@"%@",nameDescriptor);//LOG:(name, descending, compare:)
     
     
 #pragma mark sortedArrayUsingDescriptors
     NSArray *sortList = [personList sortedArrayUsingDescriptors:@[nameDescriptor,ageDescripotor]];
-    NSLog(@"%@",sortList);
-    
-    
-    
+    //NSLog(@"%@",sortList);
 
-    
-    
-    
-    
-    
-    
 #pragma mark-  三大集合类的快速枚举
-    
-    
+
     /***
      经典for循环
      for in (NSFastEnumeration)
@@ -626,39 +582,37 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
      enumerateObjectsUsingBlock
      enumerateObjectsWithOptions(NSEnumerationConcurrent)
      dispatch_apply
-     
      */
     
     
     //数组的快速枚举
     NSArray *testArray = @[@1, @2, @3, @4];
     for (id object in testArray) {
-        NSLog(@"%@",object);
+        //NSLog(@"%@",object);
     }
     
     //倒序遍历
     for (NSString * str in [array reverseObjectEnumerator]) {
-        NSLog(@"%@",str);
+        //NSLog(@"%@",str);
     }
     
     //使用block 遍历
     [array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        NSLog(@"%@",obj);
+        //NSLog(@"%@",obj);
     }];
     
     //block - 倒序
     [array enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        NSLog(@"%@",obj);
+        //NSLog(@"%@",obj);
     }];
     
-    
-    
+
     //使用block同时遍历字典key，value
     
     //block版本的字典遍历可以同时取key和value（forin只能取key再手动取value），如：
     NSDictionary *dict = @{@"a": @"1", @"b": @"2"};
     [dict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        NSLog(@"key: %@, value: %@", key, obj);
+        //NSLog(@"key: %@, value: %@", key, obj);
     }];
     
     //对于耗时且顺序无关的遍历，使用并发版本 NSEnumerationConcurrent
@@ -669,39 +623,39 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     
     //字典的快速枚举   字典快速枚举得到的是一个一个键 我们依然需要在快速枚举体内通过键去获取与之对应的值
     for (id key  in dict) {
-        NSLog(@"%@:%@,key" ,dict[key]);
+        //NSLog(@"%@:%@,key" ,dict[key]);
     }
     
     //对集合做快速枚举 可以得到每一个对象
     for (id object in set) {
-        NSLog(@"%@",object);
+        //NSLog(@"%@",object);
     }
     
 #pragma mark- NSDate
     
     //date便利构造器创建的对象是当前的系统时间，并且无论身处哪个区，得到的都是零时区的时间
     NSDate *date1 = [NSDate date];
-    NSLog(@"%@",date1);
+    //NSLog(@"%@",date1);
     
     //NSTimeInterval(double 类型) 用以表示以秒为单位的时间间隔
     NSDate *date2 = [NSDate dateWithTimeIntervalSinceNow:3600];//以当前系统时间为准，增加指定时间间隔（3600s）后的时间对象
-    NSLog(@"%@",date2);
+    //NSLog(@"%@",date2);
     
     //根据给定的时间间隔以及标准时间点1970年1月1日0点，推算出 相应的 时间对象
     NSDate *date3 = [NSDate dateWithTimeIntervalSince1970:3600];
-    NSLog(@"%@",date3);
+    //NSLog(@"%@",date3);
     
     //根据两个时间信息，获取对应的时间间隔
     NSTimeInterval timeInterval1 = [date2 timeIntervalSinceDate:date1];
-    NSLog(@"%f",timeInterval1);
+    //NSLog(@"%f",timeInterval1);
     
     
     NSTimeInterval timeInterval2 = [date2 timeIntervalSinceReferenceDate];
-    NSLog(@"%f",timeInterval2);
+    //NSLog(@"%f",timeInterval2);
     
     //获取时间戳
     NSTimeInterval timeStamp = [date2 timeIntervalSince1970];
-    NSLog(@"%f",timeStamp);
+    //NSLog(@"%f",timeStamp);
     
 #pragma mark
 
@@ -731,7 +685,6 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     NSDate *dateNow = [NSDate dateWithTimeIntervalSinceNow:timeInterval];//当前系统时间
 
 
-    
     //时间戳转换时间
     NSTimeInterval timeInterval = [time doubleValue] //?+ 288000;
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:timeInterval];
@@ -740,17 +693,17 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     NSString *timeStr = [formatter stringFromDate:date];
     
 
-    //字符串转时间
-    - (NSDate *)getDateWithString:(NSString *)str{
-        NSDateFormatter *inputFormatter = [[NSDateFormatter alloc] init] ;
-        [inputFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_CN"] ];
-        [inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
-        NSDate *startDate = [inputFormatter dateFromString:str];
-        return startDate;
-    }
+//字符串转时间
+- (NSDate *)getDateWithString:(NSString *)str{
+    NSDateFormatter *inputFormatter = [[NSDateFormatter alloc] init] ;
+    [inputFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_CN"] ];
+    [inputFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+    NSDate *startDate = [inputFormatter dateFromString:str];
+    return startDate;
+}
 
 #pragma mark NSDateformatter
-    
+
     /*
      NSFormatter 类
      字符串和 NSDate 相互转换的方法
@@ -770,10 +723,10 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     [formatter setDateFormat:@"G yyyy-MM-dd EEEE hh:mm:ss zzzz a"];
     
     NSString *time = [formatter stringFromDate:date1];
-    NSLog(@"%@",time);// 公元 2015-08-01 星期六 07:50:35 中国标准时间 下午
+    //NSLog(@"%@",time);// 公元 2015-08-01 星期六 07:50:35 中国标准时间 下午
     
     NSDate *t = [formatter dateFromString:time];
-    NSLog(@"%@",t);
+    //NSLog(@"%@",t);
     
     //打印所有时区名
     //NSArray *names = [NSTimeZone knownTimeZoneNames];
@@ -788,8 +741,7 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
 
     
 #pragma mark- NSTimer
-    
-    
+
     //注意这两者的区别
     NSTimer *timer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(gotogo) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
@@ -798,9 +750,7 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1.5 target:self selector:@selector(gotogo) userInfo:nil repeats:YES];
     [timer fire];
 
-    
-    
-    
+
     
     /*
      
@@ -836,7 +786,6 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
      */
     
 
-
 #pragma mark- 类的扩展
     
 #pragma mark 类目 Category
@@ -866,8 +815,7 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
      
      某些情况下，我们需要声明一个@property，它对外是只读的（readonly），而对内是可读写的（readwrite），这时，可以通过Extensions实现
      */
-    
-    
+
 #pragma mark 协议 Protocol
     
     /*
@@ -884,11 +832,8 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
            [self.delegate makeMoney];
            }
      }
-     
      */
-    
-    
-    
+
 #pragma mark- 内存管理
     
     /*
