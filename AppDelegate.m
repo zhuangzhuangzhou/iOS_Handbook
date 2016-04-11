@@ -843,7 +843,7 @@ self.button.userInteractionEnabled = NO;//关交互
     for (int i = 0; i <= self.coalKindArray.count ; i ++) {
         DDButton *button = [DDButton buttonWithType:UIButtonTypeCustom];
 
-        //i 取余 是第几个 i除以 是第几行 5 (每行几个 列数)
+        //i 取余 是第几个 i除以是第几行 5 (每行几个 列数)
             button.frame = CGRectMake((i % 5) * (SCREENWIDE / 5), (i / 5) * (HEIGHTBUTTON + 0.5), SCREENWIDE / 5 - 0.5, HEIGHTBUTTON - 0.5);
             [button setTitle:self.coalKindArray[i] forState:UIControlStateNormal];
 
