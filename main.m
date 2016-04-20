@@ -98,6 +98,19 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     return [str lowercaseString];
 }
 
+
+//汉字转换中文拼音
++ (NSString *)transform:(NSString *)chinese
+{
+    NSMutableString *pinyin = [chinese mutableCopy];
+    CFStringTransform((__bridge CFMutableStringRef)pinyin, NULL, kCFStringTransformMandarinLatin, NO);
+    CFStringTransform((__bridge CFMutableStringRef)pinyin, NULL, kCFStringTransformStripCombiningMarks, NO);
+    //NSLog(@"--- ：%@", pinyin);
+    return [pinyin capitalizedString];
+}
+
+
+
 #pragma mark- NSRUL
     
     //URL中文转码
