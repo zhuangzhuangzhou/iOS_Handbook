@@ -218,6 +218,16 @@ UIViewContentModeBottomRight
 }
 
 
+//压缩图片
+- (UIImage *)imageWithImageSimple:(UIImage*)image scaledToSize:(CGSize)newSize
+{
+    UIGraphicsBeginImageContext(newSize);
+    [image drawInRect:CGRectMake(0,0,newSize.width,newSize.height)];
+    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 
 
 #pragma mark 相机拍照取照片自动旋转90度的问题
