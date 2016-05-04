@@ -3013,6 +3013,42 @@ Block中可以读取块外面定义的变量但是不能修改，如果要修改
 
 
 
+//============================================
+
+/*
+它提供一种机制,当指定的对象的属性被修改后,则监听者就会接受到通知。
+就好像我们给手机定了一个闹钟，等到了制定的时间，闹钟就会响起，我们就会知道时间到了
+这个过程中，我们就是监听者，闹钟就是被监听的对象
+我们创建一个student类，使用KVO模式，给其中的username 属性添加监听者（观察者
+*/
+
+XSStudent *su = [[XSStudentalloc] init];
+su.name = @"zhangsan";
+su.age = 12;
+
+
+//Observer 观察者是谁
+//KeyPath监听的属性，比如监听学生的name属性
+//options :监听的内容
+//
+NSKeyValueObservingOptionNew,NSKeyValueObservingOptionOld这两个参数的意思是监听它的新值和旧值
+[su addObserver:self forKeyPath:@"name"options: NSKeyValueObservingOptionNew|
+ NSKeyValueObservingOptionOld context:nil];
+
+//修改属性，触发方法
+su.name = @"lis";
+
+
+//观察者观察到有值发生改变的时候发生的方法
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    //change  字典中的old  new  是关键字，专门用来存储新值和老值
+    NSLog(@"oldname %@",[change objectForKey:@"old"]);
+    NSLog(@"new %@",[change objectForKey:@"new"]);
+}
+
+注意，这里(NSString *)keyPath 传过来的就是你添加观察者的时候创建的key  ，如果想要监听多个属性，你可以根据整个值来判断到底是哪个值的变化触发了该方法
+//==============================================
 
 
 #pragma mark- 数据持久化
@@ -3037,10 +3073,10 @@ NSString *library = lar.firstObject;
 //NSLog(@"%@",library);
 
 #pragma mark    读取     写入
-NSString    initWithContentsOfFile:encoding:error:  writeToFile:atomically:encoding:error
-NSDictionary    initWithContentsOfFile      writeToFile:atomically
-NSArray     initWithContentsOfFile          writeToFile:atomically
-NSData      initWithContentsOfFile          writeToFile:atomically
+NSString        initWithContentsOfFile:encoding:error:      writeToFile:atomically:encoding:error
+NSDictionary    initWithContentsOfFile                      writeToFile:atomically
+NSArray         initWithContentsOfFile                      writeToFile:atomically
+NSData          initWithContentsOfFile                      writeToFile:atomically
 
 /**例子**/
 NSString *documentPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
