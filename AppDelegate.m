@@ -2180,6 +2180,28 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 
+#pragma mark tableView 滚动
+//可作为category
+- (void)scrollToTop {
+
+    [self.tableView setContentOffset:CGPointMake(0,0) animated:YES];
+}
+
+- (void)scrollToBottom {
+
+    NSUInteger sectionCount = [self.tableView numberOfSections];
+    if (sectionCount) {
+
+        NSUInteger rowCount = [self.tableView numberOfRowsInSection:0];
+        if (rowCount) {
+
+            NSUInteger ii[2] = {0, rowCount - 1};
+            NSIndexPath* indexPath = [NSIndexPath indexPathWithIndexes:ii length:2];
+            [self.tableView scrollToRowAtIndexPath:indexPath
+                                  atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        }
+    }    
+}
 
 
 
@@ -2693,7 +2715,6 @@ self.automaticallyAdjustsScrollViewInsets = NO;
 
 //导航栏透明
 [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-
 //去掉导航栏下的线
 self.navigationController.navigationBar.shadowImage = [UIImage new];
 
