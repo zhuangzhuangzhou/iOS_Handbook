@@ -863,7 +863,7 @@ self.button.userInteractionEnabled = NO;//关交互
 
 
 
-#pragma mark UIButton-添加点击事件
+#pragma mark UIButton- 响应UIScroll 传递事件
     
     //对象 事件 动作
     [button addTarget:self action:@selector(buttonClickAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -871,7 +871,22 @@ self.button.userInteractionEnabled = NO;//关交互
     [sender removeTarget:self action:@selector(buttonClickAction:) forControlEvents:UIControlEventTouchDragInside];
 
 
-    
+// button 响应UIScroll 传递事件
+@implementation MyScrollView
+-(BOOL)touchesShouldBegin:(NSSet *)touches withEvent:(UIEvent *)event inContentView:(UIView *)view{
+    if([view isKindOfClass:[UIButton class]]){
+        [[self nextResponder]touchesEnded:touches withEvent:event];
+        return YES;
+    }else{
+        return NO;
+    }
+}
+-(BOOL)touchesShouldCancelInContentView:(UIView *)view{
+    return NO;
+}
+
+
+
 #pragma mark - UIMenuController
 - (void)longPressAction:(UILongPressGestureRecognizer  *)sender{
     CGPoint touchPoint = [sender locationInView:self.hallCollection];
@@ -888,8 +903,6 @@ self.button.userInteractionEnabled = NO;//关交互
         [menu setMenuItems:@[report]];
         [menu setMenuVisible:YES animated:YES];
     }
-    
-    
 }
 
 //MenuController 必须实现的两个方法
@@ -1698,8 +1711,6 @@ for (int i = 0; i < 5; i ++) {
 }
 
 [self.view addSubview:scrollView];
-[scrollView release];
-
 
 
 
