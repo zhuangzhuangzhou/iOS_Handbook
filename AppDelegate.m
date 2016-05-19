@@ -550,7 +550,6 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
      UIView *rightView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
      rightView.backgroundColor = [UIColor purpleColor];
      textField.rightViewMode = UITextFieldViewModeAlways;
-     textField.rightViewMode = UITextFieldViewModeAlways;
      
      textField.rightView = leftView;
      [rightView release];
@@ -1829,6 +1828,34 @@ imageView.center = scrollView.center;
 [scrollView release];
 
 
+}
+
+
+
+#pragma mark ---  头部放大缩小操作
+- (void)scrollViewDidScroll:(UIScrollView*)scrollView{
+    
+    CGFloat yOffset  = scrollView.contentOffset.y;
+    
+    CGFloat xOffset = (yOffset +kImageOriginHight)/2;
+    
+    if(yOffset < -kImageOriginHight) {
+        
+        CGRect f =self.expandZoomImageView.frame;
+        //        CGRect
+        f.origin.y= yOffset -kTempHeight;
+        
+        f.size.height=  -yOffset +kTempHeight;
+        
+        f.origin.x= xOffset;
+        
+        f.size.width=LCDW+fabsf(xOffset)*2;
+        
+        self.expandZoomImageView.frame= f;
+        
+    }
+    
+    
 }
 
 
@@ -3862,3 +3889,64 @@ for（UIView *View in [self.View subviews]）
 //        [configDataArray replaceObjectAtIndex:2 withObject:clearCacheName];
 //
 //        [configTableView reloadData];
+    
+    
+    
+    
+#pragma mark 键盘监听模块
+
+- (void)addNotificationAndObserver{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter ] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+
+- (void)removeNotificationAndObserver{
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+}
+
+#pragma mark Keyboard Events
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+    self.previousOffset = self.tableView.contentOffset;
+    CGRect keyboardRect = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    keyboardRect = [self.tableView convertRect:keyboardRect fromView:nil];
+    NSTimeInterval animationDuration = [[notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    UIView *currentResponder = [self findFirstResponderBeneathView:self.tableView];
+    if (currentResponder != nil) {
+        CGPoint point = [currentResponder convertPoint:CGPointMake(0, currentResponder.frame.size.height) toView:self.tableView];
+        float scrollY = point.y - (keyboardRect.origin.y - 20);
+        if (scrollY > 0) {
+            [UIView animateWithDuration:animationDuration animations:^{
+                self.tableView.contentOffset = CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y + scrollY);
+            }];
+        }
+    }
+    self.tableView.scrollEnabled = NO;
+    return;
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    NSDictionary *userInfo = [notification userInfo];
+    NSTimeInterval animationDuration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    [UIView animateWithDuration:animationDuration animations:^{
+        self.tableView.contentOffset = self.previousOffset;
+    }];
+    self.tableView.scrollEnabled = YES;
+    return;
+}
+
+- (UIView *)findFirstResponderBeneathView:(UIView *)view{
+    for (UIView *childView in view.subviews) {
+        if ([childView respondsToSelector:@selector(isFirstResponder)] && [childView isFirstResponder]) {
+            return childView;
+        }
+        
+        UIView *resultView = [self findFirstResponderBeneathView:childView];
+        if (resultView) {
+            return resultView;
+        }
+    }
+    return nil;
+}
