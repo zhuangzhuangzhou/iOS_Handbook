@@ -1713,7 +1713,16 @@ for (int i = 0; i < 5; i ++) {
 [self.view addSubview:scrollView];
 
 
+#pragma mark - tableview  去除粘性
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    CGFloat  sectionHeaderHeight = 48;
+    if (scrollView.contentOffset.y <= sectionHeaderHeight && scrollView.contentOffset.y >= 0) {
+        scrollView.contentInset =  UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
 
+    }else if (scrollView.contentOffset.y >=sectionHeaderHeight){
+        scrollView.contentInset = UIEdgeInsetsMake(-sectionHeaderHeight, 0, 0, 0);
+    }
+}
 
 
 
@@ -1936,7 +1945,26 @@ NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
 tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
 
+#pragma mark cell 分割线对其
 
+//1. cell forRowAtIndexPath 写 (实践证明 在初始化 写[_budgetTableView setLayoutMargins:UIEdgeInsetsZero] + 2 就可以)
+if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+    [self.tableView setSeparatorInset:UIEdgeInsetsZero];
+}
+if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)])  {
+    [self.tableView setLayoutMargins:UIEdgeInsetsZero];
+}
+
+
+//2. 分割线对齐
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
+        [cell setLayoutMargins:UIEdgeInsetsZero];
+    }
+    if ([cell respondsToSelector:@selector(setSeparatorInset:)]){
+        [cell setSeparatorInset:UIEdgeInsetsZero];
+    }
+}
 
 
 
