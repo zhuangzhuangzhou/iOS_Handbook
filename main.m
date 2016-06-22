@@ -693,7 +693,6 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     [NSTimeZone systemTimeZone];//时区
     NSTimeInterval timeInterval = [[NSTimeZone systemTimeZone] secondsFromGMTForDate:[NSDate date]];//当前时区 和 (某date)时区的 差()
     NSTimeInterval time2 =[[NSTimeZone systemTimeZone] secondsFromGMT];//当前时区 和 零时区的 差
-
     NSDate *date = [NSDate dateWithTimeIntervalSinceNow:0];//零时区 同[NSDate date]
     NSDate *dateNow = [NSDate dateWithTimeIntervalSinceNow:timeInterval];//当前系统时间
 
@@ -714,6 +713,41 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     NSDate *startDate = [inputFormatter dateFromString:str];
     return startDate;
 }
+
+
+
+#pragma mark 计算星座
+-(NSString *)getAstroWithMonth:(NSInteger)m day:(NSInteger)d{
+
+    NSString *astroString = @"魔水鱼白金子蟹狮处秤蝎射魔";
+
+    NSString *astroFormat = @"102123444543";
+
+    NSString *result;
+
+    if (m<1||m>12||d<1||d>31){
+
+        return @"错误日期格式!";
+
+    }
+
+    if(m==2 && d>29)
+
+    {
+        return @"错误日期格式!!";
+
+    }else if(m==4 || m==6 || m==9 || m==11) {
+
+        if (d>30) {
+
+            return @"错误日期格式!!!";
+
+        }
+
+    }
+
+    result=[NSString stringWithFormat:@"%@",[astroString substringWithRange:NSMakeRange(m-(d < [[astroFormat substringWithRange:NSMakeRange((m-1), 1)] intValue] - (-19)),1)]];
+
 
 #pragma mark NSDateformatter
 
