@@ -1136,7 +1136,7 @@ self.view.userInteractionEnabled = YES;
     return nil;
 }
 
-#pragma mark UITouch
+#pragma mark- UITouch
 
 /*
  
@@ -1171,8 +1171,28 @@ self.view.userInteractionEnabled = YES;
     self.center = currentCenter;
     //让起始点指向当前的点（下一次移动的点跟当前点做差值）
     self.startPoint = position;
-    
-    
+
+}
+
+
+
+
+
+
+
+#pragma mark 判断一个点是否在这个rect区域中
+bool CGRectContainsPoint(CGRect rect,CGPoint point)
+#pragma mark 判断一个rect是否在另一个rect中
+bool CGRectContainsRect(CGRect rect1, CGRect rect2)
+
+//例子
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    CGPoint point = [[touches anyObject]locationInView:self.view];
+    if (!CGRectContainsPoint(self.listView.frame, point)) {
+        [self dismissViewControllerAnimated:YES completion:^{
+
+        }];
+    }
 }
 
 #pragma mark- 屏幕旋转
@@ -1945,9 +1965,9 @@ NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
 tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
 
-#pragma mark cell 分割线对其
+#pragma mark cell 分割线对齐
 
-//1. cell forRowAtIndexPath 写 (实践证明 在初始化 写[_budgetTableView setLayoutMargins:UIEdgeInsetsZero] + 2 就可以)
+//步骤1. cell forRowAtIndexPath 写 (实践证明 在初始化 写[_budgetTableView setLayoutMargins:UIEdgeInsetsZero]; and 步骤2 就可以)
 if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
     [self.tableView setSeparatorInset:UIEdgeInsetsZero];
 }
@@ -1956,7 +1976,7 @@ if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)])  {
 }
 
 
-//2. 分割线对齐
+//步骤2. 分割线对齐
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
     if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
         [cell setLayoutMargins:UIEdgeInsetsZero];
