@@ -1596,9 +1596,6 @@ tapGesture.numberOfTouchesRequired = 2;
 
 
 
-
-
-
 #pragma mark 屏幕边缘轻扫
 
     UIScreenEdgePanGestureRecognizer *screenEdgePan = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(handleScreenEdgePanGesture:)];
