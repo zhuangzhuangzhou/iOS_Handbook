@@ -55,7 +55,6 @@ CGRect rc = [self.view convertRect:btn.frame fromView:btn.superview];
 //添加圆角的方法（离屏渲染）
 - (UIImage *)imageWithCornerRadius:(CGFloat)radius {
     CGRect rect = (CGRect){0.f, 0.f, self.size};
-    
     UIGraphicsBeginImageContextWithOptions(self.size, NO, UIScreen.mainScreen.scale);CGContextAddPath(UIGraphicsGetCurrentContext(),
                                                                                                       [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:radius].CGPath);CGContextClip(UIGraphicsGetCurrentContext());
     
@@ -1392,28 +1391,6 @@ UISwitch * switch1 = [[UISwitch alloc]initWithFrame:CGRectMake(187, 140, 50, 50)
 
 
 
-for (int i = 0; i < 3; i ++) {
-    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
-    
-    switch (i) {
-        case 0:
-            view.backgroundColor = [UIColor blueColor];
-            break;
-        case 1:
-            view.backgroundColor = [UIColor greenColor];
-            break;
-        case 2:
-            view.backgroundColor = [UIColor redColor];
-            break;
-        default:
-            break;
-    }
-    view.tag = 100 + i;
-    [self.view addSubview:view];
-    [view release];
-    
-}
-
 UISegmentedControl *segnmentControl = [[UISegmentedControl alloc]initWithItems:@[@"红色",@"绿色",@"蓝色"]];
 segnmentControl.frame = CGRectMake((CGRectGetWidth(self.view.bounds)- 300) / 2, (CGRectGetHeight(self.view.bounds) - 60), 300, 40);
 
@@ -1547,11 +1524,6 @@ stepper.value = 220;
 
 
 
-
-
-
-
-
 #pragma mark 捏合手势
 
     UIPinchGestureRecognizer *pinch =[[UIPinchGestureRecognizer alloc]initWithTarget:self action:@selector(handlePinthGesture:)];
@@ -1568,11 +1540,6 @@ stepper.value = 220;
     sender.scale = 1;
     
 }
-
-
-
-
-
 
 
 #pragma mark 轻扫手势
@@ -1612,10 +1579,6 @@ tapGesture.numberOfTouchesRequired = 2;
 - (void)handleTapGesture:(UITapGestureRecognizer *)sender{
     self.view.backgroundColor = [UIColor colorWithRed:arc4random() % 256 / 255.0 green:arc4random() % 256 / 255.0 blue:arc4random() % 256 / 255.0 alpha:1];
 }
-
-
-
-
 
 
 
