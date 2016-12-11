@@ -50,7 +50,22 @@ CGRect rc = [self.view convertRect:btn.frame fromView:btn.superview];
     aView.layer.cornerRadius = radius;
     Button.layer.masksToBounds = YES;(圆角属性)
     //funcButton.layer.masksToBounds = YES;//是否裁切视图(按钮时候需要 待检测)
+
+
+//添加圆角的方法（离屏渲染）
+- (UIImage *)imageWithCornerRadius:(CGFloat)radius {
+    CGRect rect = (CGRect){0.f, 0.f, self.size};
     
+    UIGraphicsBeginImageContextWithOptions(self.size, NO, UIScreen.mainScreen.scale);CGContextAddPath(UIGraphicsGetCurrentContext(),
+                                                                                                      [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:radius].CGPath);CGContextClip(UIGraphicsGetCurrentContext());
+    
+    [self drawInRect:rect];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+
     
 #pragma mark 背景图片
     /*
