@@ -1,6 +1,8 @@
 
 #define appDelegate ((AppDelegate *)([UIApplication sharedApplication].delegate))
 
+UIKIT_EXTERN//简单来说，就是将函数修饰为兼容以往C编译方式的、具有extern属性(文件外可见性)、public修饰的方法或变量库外仍可见的属性
+
 #pragma mark UIWindow
 
     /*
@@ -16,32 +18,31 @@
     [self.window makeKeyAndVisible];//让window 显示在屏幕上
 
 #pragma mark- UIView
-    
-    /*
-     创建：
-     1.开辟空间并初始化视图（初始化时，给出视图位置和大小）
-     2.对视图做相应的设置（背景颜色、阿尔法值等）
-     3.将视图添加到window上显示
-     4.释放视图对象
-     */
-    
-    UIView * aView = [[UIView alloc]initWithFrame:CGRectMake((CGRectGetWidth(self.window.frame) - 150) / 2, (CGRectGetHeight(self.window.frame) - 100) / 2, 150, 100)];
-    
-    //背景色
-    aView.backgroundColor = [UIColor redColor];
-    
-    //透明度
-    aView.alpha = 0.5;
-    
-    //是否隐藏，默认否
-    aView.hidden = NO;
-    
-    //tag
-    aView.tag = 100;
-    UIView *bView = [self.window viewWithTag:100];
-    
-    //设置到window中心
-    aView.center = self.window.center;
+
+//----------------------坐标转换------------------------
+// 将像素point由point所在视图转换到目标视图view中，返回在目标视图view中的像素值
+- (CGPoint)convertPoint:(CGPoint)point toView:(UIView *)view;
+// 将像素point从view中转换到当前视图中，返回在当前视图中的位置
+- (CGPoint)convertPoint:(CGPoint)point fromView:(UIView *)view;
+// 将rect由rect所在视图转换到目标视图view中，返回在目标视图view中的rect
+- (CGRect)convertRect:(CGRect)rect toView:(UIView *)view;
+// 将rect从view中转换到当前视图中，返回在当前视图中的rect
+- (CGRect)convertRect:(CGRect)rect fromView:(UIView *)view;
+
+/*
+例把UITableViewCell中的subview(btn)的frame转换到 controllerA中
+// controllerA 中有一个UITableView, UITableView里有多行UITableVieCell，cell上放有一个button
+// 在controllerA中实现:
+CGRect rc = [cell convertRect:cell.btn.frame toView:self.view];
+或
+CGRect rc = [self.view convertRect:cell.btn.frame fromView:cell];
+// 此rc为btn在controllerA中的rect
+
+或当已知btn时：
+CGRect rc = [btn.superview convertRect:btn.frame toView:self.view];
+或
+CGRect rc = [self.view convertRect:btn.frame fromView:btn.superview];
+*/
     
 #pragma mark 角半径 圆角属性
     //设置角半径
@@ -49,7 +50,21 @@
     aView.layer.cornerRadius = radius;
     Button.layer.masksToBounds = YES;(圆角属性)
     //funcButton.layer.masksToBounds = YES;//是否裁切视图(按钮时候需要 待检测)
+
+
+//添加圆角的方法（离屏渲染）
+- (UIImage *)imageWithCornerRadius:(CGFloat)radius {
+    CGRect rect = (CGRect){0.f, 0.f, self.size};
+    UIGraphicsBeginImageContextWithOptions(self.size, NO, UIScreen.mainScreen.scale);CGContextAddPath(UIGraphicsGetCurrentContext(),
+                                                                                                      [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:radius].CGPath);CGContextClip(UIGraphicsGetCurrentContext());
     
+    [self drawInRect:rect];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+
     
 #pragma mark 背景图片
     /*
@@ -216,6 +231,16 @@ UIViewContentModeBottomRight
     return newImage;
 }
 
+
+//压缩图片
+- (UIImage *)imageWithImageSimple:(UIImage*)image scaledToSize:(CGSize)newSize
+{
+    UIGraphicsBeginImageContext(newSize);
+    [image drawInRect:CGRectMake(0,0,newSize.width,newSize.height)];
+    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
 
 
 
@@ -514,7 +539,11 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
     
     //占位文字
     textField.placeholder = @"请输入账号";
-    
+
+
+//实时监听textField 内容的变化
+[self.textField3 addTarget:self action:@selector(textChanged:) forControlEvents:UIControlEventEditingChanged];
+
 #pragma mark UITextField-左右视图
     
     /*
@@ -534,7 +563,6 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
      //创建右视图
      UIView *rightView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
      rightView.backgroundColor = [UIColor purpleColor];
-     textField.rightViewMode = UITextFieldViewModeAlways;
      textField.rightViewMode = UITextFieldViewModeAlways;
      
      textField.rightView = leftView;
@@ -561,7 +589,160 @@ UIImageWriteToSavedPhotosAlbum(self.workingImage, nil, nil, nil);//保存图片
     [self.window addSubview:textField];
     //[textField release];
     
-    
+
+#pragma mark UITextField-placehoder 的位置重写
+@interface CustomTextField : UITextField
+//经过这样的方法可以简单快捷地改变textField（包括placehoder） 文字的位置、大小、颜色等
+@end
+
+@implementation CustomTextField
+
+- (CGRect)textRectForBounds:(CGRect)bounds{
+    return CGRectMake(25, 0, bounds.size.width, bounds.size.height);
+}
+
+- (CGRect)editingRectForBounds:(CGRect)bounds{
+    return CGRectMake(25, 0, bounds.size.width, bounds.size.height);
+}
+
+@end
+
+#pragma mark 键盘通知
+/*
+ 键盘的通知：
+ UIKeyboardWillShowNotification // 键盘即将显示
+ UIKeyboardDidShowNotification // 键盘显示完毕
+ UIKeyboardWillHideNotification // 键盘即将隐藏
+ UIKeyboardDidHideNotification // 键盘隐藏完毕
+ UIKeyboardWillChangeFrameNotification // 键盘的位置尺寸即将发生改变
+ UIKeyboardDidChangeFrameNotification // 键盘的位置尺寸改变完毕
+ */
+
+
+/*
+[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+[[NSNotificationCenter defaultCenter ] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+*/
+
+//键盘显示事件
+- (void) keyboardWillShow:(NSNotification *)notification {
+
+    CGFloat kbHeight = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
+
+    UIView *currentView = [self findFirstResponderBeneathView:self.view];//用到找第一响应者（本文有）
+    if (currentView) {
+        //滚动多少 = [currentView 的下边Y值(即y+h)] 减去 [键盘升起y值(屏幕高 - 键盘高)] 加 [一定间隔（美观）]
+        CGFloat offset = (currentView.frame.origin.y + currentView.frame.size.height+INTERVAL_KEYBOARD) - (self.View.frame.size.height - kbHeight);
+        //动画时间
+        double duration = [[notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+        //大于0 需要滚动
+        if(offset > 0) {
+            [UIView animateWithDuration:duration animations:^{
+                self.view.frame = CGRectMake(0.0f, -offset, self.View.frame.size.width, self.scrollView.frame.size.height);
+            }];
+        }
+    }
+}
+
+///键盘消失事件
+- (void) keyboardWillHide:(NSNotification *)notification {
+    // 键盘动画时间
+    double duration = [[notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+
+    //视图下沉恢复原状
+    [UIView animateWithDuration:duration animations:^{
+        self.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    }];
+}
+
+
+//scrollView 用这个【http:~~~~//blog.csdn.net/woaifen3344/article/details/38382197】
+- (void)keyboardWillShow:(NSNotification *)notification {
+    self.previousOffset = self.scrollView.contentOffset;//需要定义一个上一次偏移量
+    NSDictionary *userInfo = [notification userInfo];
+
+    CGRect keyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    // convert keyboard rect from window coordinate to scroll view coordinate
+    keyboardRect = [self.scrollView convertRect:keyboardRect fromView:nil];
+    // get keybord anmation duration
+    NSTimeInterval animationDuration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+
+    // get first responder textfield
+    UIView *currentResponder = [self findFirstResponderBeneathView:self.scrollView];
+    if (currentResponder != nil) {
+        // convert textfield left bottom point to scroll view coordinate
+        CGPoint point = [currentResponder convertPoint:CGPointMake(0, currentResponder.frame.size.height) toView:self.scrollView];
+        // 计算textfield左下角和键盘上面20像素 之间是不是差值
+        float scrollY = point.y - (keyboardRect.origin.y - 20);
+        if (scrollY > 0) {
+            [UIView animateWithDuration:animationDuration animations:^{
+                //移动textfield到键盘上面20个像素
+                self.scrollView.contentOffset = CGPointMake(self.scrollView.contentOffset.x, self.scrollView.contentOffset.y + scrollY);
+            }];
+        }
+    }
+    self.scrollView.scrollEnabled = NO;
+    return;
+}
+
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    NSDictionary *userInfo = [notification userInfo];
+    NSTimeInterval animationDuration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    [UIView animateWithDuration:animationDuration animations:^{
+        self.scrollView.contentOffset = self.previousOffset;
+    }];
+    self.scrollView.scrollEnabled = YES;
+
+    return;
+}
+
+
+#pragma mark 收起键盘
+
+//简单粗暴 代替tap手势
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [self.view endEditing:YES];
+}
+
+
+/*
+ 1 文件头引入代理UITextFieldDelegate
+ 2 设置代理对象 textField.delegate = self;
+ 3 重写实现方法- (BOOL)textFieldShouldReturn:(UITextField *)textField
+ */
+
+
+- (BOOL) textFieldShouldReturn:(UITextField *)textField{
+    //调试工具 （执行 函数的行数  函数）
+    //NSLog(@"%d__%s",__LINE__,__func__);
+    [textField resignFirstResponder];
+    return YES;
+}
+
+
+- (BOOL)textFieldShouldReturn1:(UITextField *)textField{
+    [[self.window viewWithTag:120] resignFirstResponder];
+    [[self.window viewWithTag:121] becomeFirstResponder];
+    [textField resignFirstResponder];
+
+    return YES;
+    //简便方法
+    [self.view endediting YES];
+}
+
+//手势识别 + 上下判断
+- (void)handleSwipeGesture:(UISwipeGestureRecognizer *)sender{
+    if ([[self.window viewWithTag:120] isFirstResponder]) {
+        [[self.window viewWithTag:120] resignFirstResponder];
+        [[self.window viewWithTag:121] becomeFirstResponder];
+    }else{
+        [[self.window viewWithTag:121] resignFirstResponder];
+    }
+}
+
+
+
     
 #pragma mark- UIButton
     
@@ -679,7 +860,23 @@ self.button.titleLabel.font = [UIFont systemFontOfSize:11];
 [self.button setTitle:@"专题" forState:UIControlStateNormal];
 self.button.userInteractionEnabled = NO;//关交互
 
-#pragma mark UIButton-添加点击事件
+//一个循环创建多行多列按钮
+- (void)getCoalKindButton{
+
+    for (int i = 0; i <= self.coalKindArray.count ; i ++) {
+        DDButton *button = [DDButton buttonWithType:UIButtonTypeCustom];
+
+        //i 取余 是第几个 i除以是第几行 5 (每行几个 列数)
+            button.frame = CGRectMake((i % 5) * (SCREENWIDE / 5), (i / 5) * (HEIGHTBUTTON + 0.5), SCREENWIDE / 5 - 0.5, HEIGHTBUTTON - 0.5);
+            [button setTitle:self.coalKindArray[i] forState:UIControlStateNormal];
+
+    }
+}
+
+
+
+
+#pragma mark UIButton- 响应UIScroll 传递事件
     
     //对象 事件 动作
     [button addTarget:self action:@selector(buttonClickAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -687,7 +884,22 @@ self.button.userInteractionEnabled = NO;//关交互
     [sender removeTarget:self action:@selector(buttonClickAction:) forControlEvents:UIControlEventTouchDragInside];
 
 
-    
+// button 响应UIScroll 传递事件
+@implementation MyScrollView
+-(BOOL)touchesShouldBegin:(NSSet *)touches withEvent:(UIEvent *)event inContentView:(UIView *)view{
+    if([view isKindOfClass:[UIButton class]]){
+        [[self nextResponder]touchesEnded:touches withEvent:event];
+        return YES;
+    }else{
+        return NO;
+    }
+}
+-(BOOL)touchesShouldCancelInContentView:(UIView *)view{
+    return NO;
+}
+
+
+
 #pragma mark - UIMenuController
 - (void)longPressAction:(UILongPressGestureRecognizer  *)sender{
     CGPoint touchPoint = [sender locationInView:self.hallCollection];
@@ -704,8 +916,6 @@ self.button.userInteractionEnabled = NO;//关交互
         [menu setMenuItems:@[report]];
         [menu setMenuVisible:YES animated:YES];
     }
-    
-    
 }
 
 //MenuController 必须实现的两个方法
@@ -841,53 +1051,6 @@ _webView.delegate = self;
 
 
 
-
-
-
-#pragma mark- ***功能函数***
-
-#pragma mark 收起键盘
-
-/*
- 1 文件头引入代理UITextFieldDelegate
- 2 设置代理对象 textField.delegate = self;
- 3 重写实现方法- (BOOL)textFieldShouldReturn:(UITextField *)textField
- */
-
-
-- (BOOL) textFieldShouldReturn:(UITextField *)textField{
-    //调试工具 （执行 函数的行数  函数）
-    //NSLog(@"%d__%s",__LINE__,__func__);
-    [textField resignFirstResponder];
-    
-    
-    return YES;
-}
-
-- (BOOL)textFieldShouldReturn1:(UITextField *)textField{
-    [[self.window viewWithTag:120] resignFirstResponder];
-    [[self.window viewWithTag:121] becomeFirstResponder];
-    [textField resignFirstResponder];
-    
-    return YES;
-    
-    //简便方法
-    [self.view endediting YES];
-}
-
-//手势识别 + 上下判断
-- (void)handleSwipeGesture:(UISwipeGestureRecognizer *)sender{
-    if ([[self.window viewWithTag:120] isFirstResponder]) {
-        [[self.window viewWithTag:120] resignFirstResponder];
-        [[self.window viewWithTag:121] becomeFirstResponder];
-    }else{
-        [[self.window viewWithTag:121] resignFirstResponder];
-    }
-}
-    
-    
-    }
-
 #pragma mark 按钮功能 + 计时器
 
 - (void)buttonFunction:(UIButton *)sender{
@@ -971,8 +1134,22 @@ _webView.delegate = self;
 
 self.view.userInteractionEnabled = YES;
 
+#pragma mark 找到第一响应者
+- (UIView *)findFirstResponderBeneathView:(UIView *)view{
+    for (UIView *childView in view.subviews) {
+        if ([childView respondsToSelector:@selector(isFirstResponder)] && [childView isFirstResponder]) {
+            return childView;
+        }
 
-#pragma mark UITouch
+        UIView *resultView = [self findFirstResponderBeneathView:childView];
+        if (resultView) {
+            return resultView;
+        }
+    }
+    return nil;
+}
+
+#pragma mark- UITouch
 
 /*
  
@@ -1007,8 +1184,28 @@ self.view.userInteractionEnabled = YES;
     self.center = currentCenter;
     //让起始点指向当前的点（下一次移动的点跟当前点做差值）
     self.startPoint = position;
-    
-    
+
+}
+
+
+
+
+
+
+
+#pragma mark 判断一个点是否在这个rect区域中
+bool CGRectContainsPoint(CGRect rect,CGPoint point)
+#pragma mark 判断一个rect是否在另一个rect中
+bool CGRectContainsRect(CGRect rect1, CGRect rect2)
+
+//例子
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    CGPoint point = [[touches anyObject]locationInView:self.view];
+    if (!CGRectContainsPoint(self.listView.frame, point)) {
+        [self dismissViewControllerAnimated:YES completion:^{
+
+        }];
+    }
 }
 
 #pragma mark- 屏幕旋转
@@ -1194,28 +1391,6 @@ UISwitch * switch1 = [[UISwitch alloc]initWithFrame:CGRectMake(187, 140, 50, 50)
 
 
 
-for (int i = 0; i < 3; i ++) {
-    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
-    
-    switch (i) {
-        case 0:
-            view.backgroundColor = [UIColor blueColor];
-            break;
-        case 1:
-            view.backgroundColor = [UIColor greenColor];
-            break;
-        case 2:
-            view.backgroundColor = [UIColor redColor];
-            break;
-        default:
-            break;
-    }
-    view.tag = 100 + i;
-    [self.view addSubview:view];
-    [view release];
-    
-}
-
 UISegmentedControl *segnmentControl = [[UISegmentedControl alloc]initWithItems:@[@"红色",@"绿色",@"蓝色"]];
 segnmentControl.frame = CGRectMake((CGRectGetWidth(self.view.bounds)- 300) / 2, (CGRectGetHeight(self.view.bounds) - 60), 300, 40);
 
@@ -1349,11 +1524,6 @@ stepper.value = 220;
 
 
 
-
-
-
-
-
 #pragma mark 捏合手势
 
     UIPinchGestureRecognizer *pinch =[[UIPinchGestureRecognizer alloc]initWithTarget:self action:@selector(handlePinthGesture:)];
@@ -1370,11 +1540,6 @@ stepper.value = 220;
     sender.scale = 1;
     
 }
-
-
-
-
-
 
 
 #pragma mark 轻扫手势
@@ -1417,10 +1582,6 @@ tapGesture.numberOfTouchesRequired = 2;
 
 
 
-
-
-
-
 #pragma mark 长按手势
 
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(handleLongPressGesture:)];
@@ -1432,9 +1593,6 @@ tapGesture.numberOfTouchesRequired = 2;
 - (void)handleLongPressGesture:(UILongPressGestureRecognizer *)sender{
     self.view.backgroundColor = [UIColor clearColor];
 }
-
-
-
 
 
 
@@ -1547,11 +1705,18 @@ for (int i = 0; i < 5; i ++) {
 }
 
 [self.view addSubview:scrollView];
-[scrollView release];
 
 
+#pragma mark - tableview  去除粘性
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    CGFloat  sectionHeaderHeight = 48;
+    if (scrollView.contentOffset.y <= sectionHeaderHeight && scrollView.contentOffset.y >= 0) {
+        scrollView.contentInset =  UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
 
-
+    }else if (scrollView.contentOffset.y >=sectionHeaderHeight){
+        scrollView.contentInset = UIEdgeInsetsMake(-sectionHeaderHeight, 0, 0, 0);
+    }
+}
 
 
 
@@ -1658,6 +1823,34 @@ imageView.center = scrollView.center;
 [scrollView release];
 
 
+}
+
+
+
+#pragma mark ---  头部放大缩小操作
+- (void)scrollViewDidScroll:(UIScrollView*)scrollView{
+    
+    CGFloat yOffset  = scrollView.contentOffset.y;
+    
+    CGFloat xOffset = (yOffset +kImageOriginHight)/2;
+    
+    if(yOffset < -kImageOriginHight) {
+        
+        CGRect f =self.expandZoomImageView.frame;
+        //        CGRect
+        f.origin.y= yOffset -kTempHeight;
+        
+        f.size.height=  -yOffset +kTempHeight;
+        
+        f.origin.x= xOffset;
+        
+        f.size.width=LCDW+fabsf(xOffset)*2;
+        
+        self.expandZoomImageView.frame= f;
+        
+    }
+    
+    
 }
 
 
@@ -1774,7 +1967,26 @@ NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
 tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
 
+#pragma mark cell 分割线对齐
 
+//步骤1. cell forRowAtIndexPath 写 (实践证明 在初始化 写[_budgetTableView setLayoutMargins:UIEdgeInsetsZero]; and 步骤2 就可以)
+if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+    [self.tableView setSeparatorInset:UIEdgeInsetsZero];
+}
+if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)])  {
+    [self.tableView setLayoutMargins:UIEdgeInsetsZero];
+}
+
+
+//步骤2. 分割线对齐
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
+        [cell setLayoutMargins:UIEdgeInsetsZero];
+    }
+    if ([cell respondsToSelector:@selector(setSeparatorInset:)]){
+        [cell setSeparatorInset:UIEdgeInsetsZero];
+    }
+}
 
 
 
@@ -2029,6 +2241,28 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 
+#pragma mark tableView 滚动
+//可作为category
+- (void)scrollToTop {
+
+    [self.tableView setContentOffset:CGPointMake(0,0) animated:YES];
+}
+
+- (void)scrollToBottom {
+
+    NSUInteger sectionCount = [self.tableView numberOfSections];
+    if (sectionCount) {
+
+        NSUInteger rowCount = [self.tableView numberOfRowsInSection:0];
+        if (rowCount) {
+
+            NSUInteger ii[2] = {0, rowCount - 1};
+            NSIndexPath* indexPath = [NSIndexPath indexPathWithIndexes:ii length:2];
+            [self.tableView scrollToRowAtIndexPath:indexPath
+                                  atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        }
+    }    
+}
 
 
 
@@ -2068,7 +2302,7 @@ UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
 self.Cov.alwaysBounceVertical = YES;
 
 
-// 选择一个 （顺便滚动）
+// 选择一个 （并且滚动  到）
 [self.collection selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionTop];
 
 滚动到下一页
@@ -2098,8 +2332,8 @@ self.Cov.alwaysBounceVertical = YES;
 // ** scrollDirection属性
  //设定滚动方向，有UICollectionViewScrollDirectionVertical和UICollectionViewScrollDirectionHorizontal两个值。
  
- ** headerReferenceSize属性与footerReferenceSize属性
- 设定页眉和页脚的全局尺寸，需要注意的是，根据滚动方向不同，header和footer的width和height中只有一个会起作用。如果要单独设置指定区内的页面和页脚尺寸，可以使用下面方法：
+ //** headerReferenceSize属性与footerReferenceSize属性
+ //设定页眉和页脚的全局尺寸，需要注意的是，根据滚动方向不同，header和footer的width和height中只有一个会起作用。如果要单独设置指定区内的页面和页脚尺寸，可以使用下面方法：
  
  - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
  
@@ -2112,39 +2346,27 @@ self.Cov.alwaysBounceVertical = YES;
  
  - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section;
  
- 然后需要实现三种类型的委托：UICollectionViewDataSource, UICollectionViewDelagate和UICollectionViewDelegateFlowLayout。
- 
- @interface ViewController : UIViewController <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource>
+ //然后需要实现三种类型的委托：UICollectionViewDataSource, UICollectionViewDelagate和UICollectionViewDelegateFlowLayout。
  
  
  
 // ** UICollectionViewDataSource
- 
- - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
- 
+
 // 返回collection view里区(section)的个数，如果没有实现该方法，将默认返回1：
  
  - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
  {
  return 2;
  }
- 
- 
- - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
- 
+
  //返回指定区(section)包含的数据源条目数(number of items)，该方法必须实现：
  
  - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
  {
  return 7;
  }
- 
- 
- - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
- 
+
  //返回某个indexPath对应的cell，该方法必须实现：
- 
- 
  - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
  {
  UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"myCell" forIndexPath:indexPath];
@@ -2159,6 +2381,7 @@ self.Cov.alwaysBounceVertical = YES;
  return cell;
  }
 
+
 /**
  *UICollectionViewCell结构上相对比较简单，由下至上：
  
@@ -2169,16 +2392,10 @@ self.Cov.alwaysBounceVertical = YES;
 
  */
 
- 
- 
- 
- 
  - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
  
  为collection view添加一个补充视图(页眉或页脚)
- 
- 
- 
+
  - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
  
  设定页眉的尺寸
@@ -2255,10 +2472,8 @@ self.Cov.alwaysBounceVertical = YES;
  
  
  
- UICollectionViewDelegateFlowLayout
- 
- - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
- 
+ //*********- UICollectionViewDelegateFlowLayout -*********
+
  //设定指定Cell的尺寸
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -2273,10 +2488,14 @@ self.Cov.alwaysBounceVertical = YES;
  }
 
  
+
+ //设定collectionView(指定区)的边距
+
  
  - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section;
 
 // 设定collectionView(指定区)的边距
+
  - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
  {
  if(section==0)
@@ -2292,12 +2511,7 @@ self.Cov.alwaysBounceVertical = YES;
  
  
 
-  设定指定区内Cell的最小行距，也可以直接设置UICollectionViewFlowLayout的minimumLineSpacing属性
- - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
- 
-
- 
-
+  //设定指定区内Cell的最小行距，也可以直接设置UICollectionViewFlowLayout的minimumLineSpacing属性
  - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
  {
  if(section==0)
@@ -2311,11 +2525,7 @@ self.Cov.alwaysBounceVertical = YES;
  }
 
  
- 
- - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section;
- 
- 设定指定区内Cell的最小间距，也可以直接设置UICollectionViewFlowLayout的minimumInteritemSpacing属性
- 
+ //设定指定区内Cell的最小间距，也可以直接设置UICollectionViewFlowLayout的minimumInteritemSpacing属性
 
  - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
  {
@@ -2331,10 +2541,8 @@ self.Cov.alwaysBounceVertical = YES;
 
  
  
- UICollectionViewDelegate
- 
- - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
- 
+ //************* UICollectionViewDelegate ***************
+
  //当指定indexPath处的item被选择时触发
  
  - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -2350,9 +2558,6 @@ self.Cov.alwaysBounceVertical = YES;
  - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
  
 
- 
- 
- 
  //下面是三个和高亮有关的方法：
  
  - (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
@@ -2407,8 +2612,9 @@ self.Cov.alwaysBounceVertical = YES;
  
  [cell setBackgroundColor:[UIColor yellowColor]];
  }
- 
- 
+
+
+/****************************/
 
 //1.初始化collectionView
 UICollectionView *collectionView = [[UICollectionView alloc]initWithFrame:self.view.bounds collectionViewLayout:layout];
@@ -2516,7 +2722,6 @@ TabBarController  *tabBar = [[TabBarController alloc]init];
 tabBar.delegate = self;
 
 
-=======================
 //注意一下这两句的区别
 //[self setViewControllers:@[moveieVC,ActivityVC,cinemaVC,userVC]];
 [self setViewControllers:@[activityNav,moveieNav,cinemaNav,userNav]];
@@ -2555,7 +2760,7 @@ UINavigationController *navi = [[UINavigationController alloc]initWithRootViewCo
 //将导航控制器指定为window的跟视图控制器
 self.window.rootViewController = navi;
 
-
+self.navigationItem.titleView = self.mysearchBar;//导航条上有搜索框
 
 #pragma mark  NavigationBar 导航条
 
@@ -2571,7 +2776,6 @@ self.automaticallyAdjustsScrollViewInsets = NO;
 
 //导航栏透明
 [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-
 //去掉导航栏下的线
 self.navigationController.navigationBar.shadowImage = [UIImage new];
 
@@ -2793,13 +2997,16 @@ self.navigationController.interactivePopGestureRecognizer.delegate = self;
  1.声明block函数(变量) 注意 block作为属性 是copy
  @property (nonatomic, copy) void(^passValueBlock)(NSString *);
  
- 2.给block属性赋值(跳转事件触发时)
+ 
+ 2.通过block传值(返回事件触发时)
+ self.passValueBlock(textFeild.text);
+ 
+ 3.给block属性赋值(跳转事件触发时)[跳转回调]
  dateVC.passValueBlock =^(NSString *text){
  label.text = text;
  };
  
- 3.通过block传值(返回事件触发时)
- self.passValueBlock(textFeild.text);
+
  */
 
 Block类型定义：返回值类型(^ 变量名)(参数列表)（注意Block也是一种类型）；
@@ -2898,6 +3105,42 @@ Block中可以读取块外面定义的变量但是不能修改，如果要修改
 
 
 
+//============================================
+
+/*
+它提供一种机制,当指定的对象的属性被修改后,则监听者就会接受到通知。
+就好像我们给手机定了一个闹钟，等到了制定的时间，闹钟就会响起，我们就会知道时间到了
+这个过程中，我们就是监听者，闹钟就是被监听的对象
+我们创建一个student类，使用KVO模式，给其中的username 属性添加监听者（观察者
+*/
+
+XSStudent *su = [[XSStudentalloc] init];
+su.name = @"zhangsan";
+su.age = 12;
+
+
+//Observer 观察者是谁
+//KeyPath监听的属性，比如监听学生的name属性
+//options :监听的内容
+//
+NSKeyValueObservingOptionNew,NSKeyValueObservingOptionOld这两个参数的意思是监听它的新值和旧值
+[su addObserver:self forKeyPath:@"name"options: NSKeyValueObservingOptionNew|
+ NSKeyValueObservingOptionOld context:nil];
+
+//修改属性，触发方法
+su.name = @"lis";
+
+
+//观察者观察到有值发生改变的时候发生的方法
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    //change  字典中的old  new  是关键字，专门用来存储新值和老值
+    NSLog(@"oldname %@",[change objectForKey:@"old"]);
+    NSLog(@"new %@",[change objectForKey:@"new"]);
+}
+
+注意，这里(NSString *)keyPath 传过来的就是你添加观察者的时候创建的key  ，如果想要监听多个属性，你可以根据整个值来判断到底是哪个值的变化触发了该方法
+//==============================================
 
 
 #pragma mark- 数据持久化
@@ -2922,10 +3165,10 @@ NSString *library = lar.firstObject;
 //NSLog(@"%@",library);
 
 #pragma mark    读取     写入
-NSString    initWithContentsOfFile:encoding:error:  writeToFile:atomically:encoding:error
-NSDictionary    initWithContentsOfFile      writeToFile:atomically
-NSArray     initWithContentsOfFile          writeToFile:atomically
-NSData      initWithContentsOfFile          writeToFile:atomically
+NSString        initWithContentsOfFile:encoding:error:      writeToFile:atomically:encoding:error
+NSDictionary    initWithContentsOfFile                      writeToFile:atomically
+NSArray         initWithContentsOfFile                      writeToFile:atomically
+NSData          initWithContentsOfFile                      writeToFile:atomically
 
 /**例子**/
 NSString *documentPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
@@ -3524,7 +3767,7 @@ View *view = [[[NSBundle mainBundle]loadNibNamed:@"View" owner:nil options:nil] 
     /**
      代码创建约束
      1.禁用autoresizing
-     blueView.translatesAutoresizingMaskIntoConstraints = NO;
+     blueView.translatesAutoresizingMaskIntoConstraints = NO;还有为了避免和系统生成的自动伸缩的约束不冲突 一般加上这句
      2.不需要设置frame
      3.添加约束一定要注意 要给谁添加（父控件  还是自身控件）
      
@@ -3559,6 +3802,63 @@ View *view = [[[NSBundle mainBundle]loadNibNamed:@"View" owner:nil options:nil] 
      
      
      */
+
+
+#pragma mark 约束相关
+
+    1、layoutSubviews
+
+    在iOS5.1和之前的版本，此方法的缺省实现不会做任何事情(实现为空)，iOS5.1之后(iOS6开始)的版本，此方法的缺省实现是使用你设置在此view上面的constraints(Autolayout)去决定subviews的position和size。 UIView的子类如果需要对其subviews进行更精确的布局，则可以重写此方法。只有在autoresizing和constraint-based behaviors of subviews不能提供我们想要的布局结果的时候，我们才应该重写此方法。可以在此方法中直接设置subviews的frame。 我们不应该直接调用此方法，而应当用下面两个方法。
+
+    2、setNeedsLayout
+
+    此方法会将view当前的layout设置为无效的，并在下一个upadte cycle里去触发layout更新。
+
+    3、layoutIfNeeded
+
+    使用此方法强制立即进行layout,从当前view开始，此方法会遍历整个view层次(包括superviews)请求layout。因此，调用此方法会强制整个view层次布局。
+
+
+
+    基于约束的AutoLayer的方法：
+
+    1、setNeedsUpdateConstraints
+
+    当一个自定义view的某个属性发生改变，并且可能影响到constraint时，需要调用此方法去标记constraints需要在未来的某个点更新，系统然后调用updateConstraints.
+
+    2、needsUpdateConstraints
+
+    constraint-based layout system使用此返回值去决定是否需要调用updateConstraints作为正常布局过程的一部分。
+
+    3、updateConstraintsIfNeeded
+
+    立即触发约束更新，自动更新布局。
+
+    4、updateConstraints
+
+
+    自定义view应该重写此方法在其中建立constraints. 注意：要在实现在最后调用[super updateConstraints]
+
+    Auto Layout Process 自动布局过程
+
+    与使用springs and struts(autoresizingMask)比较，Auto layout在view显示之前，多引入了两个步骤：updating constraints 和laying out views。每一个步骤都依赖于上一个。display依赖layout，而layout依赖updating constraints。 updating constraints->layout->display
+
+    第一步：updating constraints，被称为测量阶段，其从下向上(from subview to super view),为下一步layout准备信息。可以通过调用方法setNeedUpdateConstraints去触发此步。constraints的改变也会自动的触发此步。但是，当你自定义view的时候，如果一些改变可能会影响到布局的时候，通常需要自己去通知Auto layout，updateConstraintsIfNeeded。
+
+    自定义view的话，通常可以重写updateConstraints方法，在其中可以添加view需要的局部的contraints。
+
+    第二步：layout，其从上向下(from super view to subview)，此步主要应用上一步的信息去设置view的center和bounds。可以通过调用setNeedsLayout去触发此步骤，此方法不会立即应用layout。如果想要系统立即的更新layout，可以调用layoutIfNeeded。另外，自定义view可以重写方法layoutSubViews来在layout的工程中得到更多的定制化效果。
+
+    第三步：display，此步时把view渲染到屏幕上，它与你是否使用Auto layout无关，其操作是从上向下(from super view to subview)，通过调用setNeedsDisplay触发，
+
+    因为每一步都依赖前一步，因此一个display可能会触发layout，当有任何layout没有被处理的时候，同理，layout可能会触发updating constraints，当constraint system更新改变的时候。
+    
+    需要注意的是，这三步不是单向的，constraint-based layout是一个迭代的过程，layout过程中，可能去改变constraints，有一次触发updating constraints，进行一轮layout过程。
+    
+    注意：如果你每一次调用自定义layoutSubviews都会导致另一个布局传递，那么你将会陷入一个无限循环中。 
+    
+
+
 
 
 #pragma mark- 实用相关
@@ -3641,3 +3941,64 @@ for（UIView *View in [self.View subviews]）
 //        [configDataArray replaceObjectAtIndex:2 withObject:clearCacheName];
 //
 //        [configTableView reloadData];
+    
+    
+    
+    
+#pragma mark 键盘监听模块
+
+- (void)addNotificationAndObserver{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter ] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+
+- (void)removeNotificationAndObserver{
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+}
+
+#pragma mark Keyboard Events
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+    self.previousOffset = self.tableView.contentOffset;
+    CGRect keyboardRect = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    keyboardRect = [self.tableView convertRect:keyboardRect fromView:nil];
+    NSTimeInterval animationDuration = [[notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    UIView *currentResponder = [self findFirstResponderBeneathView:self.tableView];
+    if (currentResponder != nil) {
+        CGPoint point = [currentResponder convertPoint:CGPointMake(0, currentResponder.frame.size.height) toView:self.tableView];
+        float scrollY = point.y - (keyboardRect.origin.y - 20);
+        if (scrollY > 0) {
+            [UIView animateWithDuration:animationDuration animations:^{
+                self.tableView.contentOffset = CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y + scrollY);
+            }];
+        }
+    }
+    self.tableView.scrollEnabled = NO;
+    return;
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    NSDictionary *userInfo = [notification userInfo];
+    NSTimeInterval animationDuration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    [UIView animateWithDuration:animationDuration animations:^{
+        self.tableView.contentOffset = self.previousOffset;
+    }];
+    self.tableView.scrollEnabled = YES;
+    return;
+}
+
+- (UIView *)findFirstResponderBeneathView:(UIView *)view{
+    for (UIView *childView in view.subviews) {
+        if ([childView respondsToSelector:@selector(isFirstResponder)] && [childView isFirstResponder]) {
+            return childView;
+        }
+        
+        UIView *resultView = [self findFirstResponderBeneathView:childView];
+        if (resultView) {
+            return resultView;
+        }
+    }
+    return nil;
+}
