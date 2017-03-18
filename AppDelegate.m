@@ -951,6 +951,18 @@ self.button.userInteractionEnabled = NO;//关交互
         return YES;
     }
 
+
+
+UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:message preferredStyle:UIAlertControllerStyleAlert];
+
+[alert addAction:([UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    //completionHandler();这是WKWebView中的代理（）
+}])];
+[self presentViewController:alert animated:YES completion:nil];
+
+
+
+
 #pragma mark UIwebView
 
 继承关系：UIWebView : UIView <NSCoding, UIScrollViewDelegate>

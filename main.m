@@ -39,7 +39,14 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     //NSLog(@"%@",result ? @"YES" : @"NO");
     BOOL result1 = [@"http://www.baidu.com"hasSuffix:@"www"];
     //NSLog(@"%@", result1 ? @"YES" : @"NO");
-    
+
+- (BOOL)stringIsRepeated:(NSString *)repeatStr inString:(NSString *)string{
+    repeatStr = [repeatStr stringByAppendingString:repeatStr];
+    return [string rangeOfString:repeatStr].location != NSNotFound;
+}
+
+if([string containsString:@"N"])
+
 #pragma mark 搜索字符串范围
     NSRange range = [str1 rangeOfString:@"old"];
     //NSLog(@"%@",NSStringFromRange(range));//NSRange 是结构体类型，起始下标location，长度length，如果存在，length不为0
