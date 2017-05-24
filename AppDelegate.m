@@ -2209,6 +2209,15 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     return [normalImage resizableImageWithCapInsets:UIEdgeInsetsMake(fixed_y, fixed_x, fixed_y, fixed_x)];
 }
 
+- (UIImage *)stretchableImageWithLeftCapWidth:(NSInteger)leftCapWidth topCapHeight:(NSInteger)topCapHeight
+
+//这是 UIImage 的一个实例方法，它的功能是创建一个内容可拉伸，而边角不拉伸的图片，需要两个参数，第一个是左边不拉伸区域的宽度，第二个参数是上面不拉伸的高度。
+
+//根据设置的宽度和高度，将接下来的一个像素进行左右扩展和上下拉伸。
+
+//注意：可拉伸的范围都是距离leftCapWidth后的1竖排像素，和距离topCapHeight后的1横排像素。
+
+
 
 #pragma mark  键盘弹出动画
 
@@ -2827,6 +2836,10 @@ self.navigationItem.leftBarButtonItem = leftBarButton;
 //（技巧）当自定义左按钮时，会导致屏幕边缘平移返回上一级视图失效，如下代码可以激活返回手势（技巧）
 self.navigationController.interactivePopGestureRecognizer.delegate = self;
 
+
+//导航栏的返回按钮只保留那个箭头，去掉后边的文字，最简单且没有副作用的方法就是
+[[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -60)
+                                                     forBarMetrics:UIBarMetricsDefault];
 
 
 /*
