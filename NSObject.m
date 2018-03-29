@@ -1,9 +1,6 @@
-unichar c = [sender.titleLabel.text characterAtIndex:0];
-if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
-    //NSLog(@"这是汉字");
-}
+
 #pragma mark- NSString
-    
+
     //创建指定格式的字符串对象
     NSString *str1 = [NSString stringWithFormat:@"How old are you"];
 
@@ -15,7 +12,13 @@ if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
     
     //获取字符串长度
     NSInteger length = [str length];
-    
+
+#pragma mark 汉字判断
+unichar c = [sender.titleLabel.text characterAtIndex:0];
+if (c > 0x4e00 && c < 0x9FFF) {//汉字Unicode编码
+    //NSLog(@"这是汉字");
+}
+
 #pragma mark 根据下标获取字符
     for (int i = 0; i < length; i ++) {
         //NSLog(@"%c",[str1 characterAtIndex:i]);
@@ -232,8 +235,6 @@ if([string containsString:@"N"])
     
     /*
      NSNumber就是数字对象
-     
-     
      NSValue对象是用来存储一个C或者Objective－C数据的简单容器。它可以保存任意类型的数据，比如int，float，char，当然也可以是指pointers, structures, and object ids。NSValue类的目标就是允许以上数据类型的数据结构能够被添加到集合里，例如那些需要其元素是对象的数据结构，如NSArray或者NSSet的实例。需要注意的是NSValue对象一直是不可枚举的。
      
      */
@@ -242,8 +243,7 @@ if([string containsString:@"N"])
     int pm2_5 = [string intValue];
     
 #pragma mark- NSArray
-    
-    
+
     //快速求数组最大值
     [array valueForKeyPath:@"@max.floatValue"]
     
@@ -971,27 +971,4 @@ if([string containsString:@"N"])
     
     */
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    return 0;
-}
 

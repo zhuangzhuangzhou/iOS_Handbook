@@ -49,7 +49,7 @@ CGRect rc = [self.view convertRect:btn.frame fromView:btn.superview];
     CGFloat radius = CGRectGetWidth(aView.bounds) / 2.0;
     aView.layer.cornerRadius = radius;
     Button.layer.masksToBounds = YES;(圆角属性)
-    //funcButton.layer.masksToBounds = YES;//是否裁切视图(按钮时候需要 待检测)
+    //funcButton.layer.masksToBounds = YES;//是否裁切视图 注意：设置此属性会造成离屏渲染，过度使用会产生性能问题。
 
 
 //添加圆角的方法（离屏渲染）
@@ -3712,8 +3712,7 @@ Person *aPerson = [[Person alloc]init];
     [queue addOperation:blockOperation];
     
 
-#pragma mark 动画
-    
+
     
 
 #pragma mark 毛玻璃
@@ -3955,7 +3954,7 @@ for（UIView *View in [self.View subviews]）
 #pragma mark SDwebImagge
 
 [[SDImageCache sharedImageCache] clearDisk];
-[[SDImageCache sharedImageCache] clearMemory];//可有可无
+[[SDImageCache sharedImageCache] clearMemory];
 //
 //        DLog(@"clear disk");
 //
@@ -3970,7 +3969,7 @@ for（UIView *View in [self.View subviews]）
     
     
     
-#pragma mark 键盘监听模块
+#pragma mark 键盘相关通知
 
 - (void)addNotificationAndObserver{
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -4026,4 +4025,25 @@ for（UIView *View in [self.View subviews]）
         }
     }
     return nil;
+}
+
+#pragma mark- 动画
+/**
+*  抖动效果
+*
+*  @param view 要抖动的view
+*/
+- (void)shakeAnimationForView:(UIView *) view {
+    CALayer *viewLayer = view.layer;
+    CGPoint position = viewLayer.position;
+    CGPoint x = CGPointMake(position.x + 1, position.y);
+    CGPoint y = CGPointMake(position.x - 1, position.y);
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"position"];
+    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault]];
+    [animation setFromValue:[NSValue valueWithCGPoint:x]];
+    [animation setToValue:[NSValue valueWithCGPoint:y]];
+    [animation setAutoreverses:YES];
+    [animation setDuration:.06];
+    [animation setRepeatCount:3];
+    [viewLayer addAnimation:animation forKey:nil];
 }
