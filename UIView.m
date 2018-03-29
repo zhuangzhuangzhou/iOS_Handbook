@@ -5,17 +5,17 @@ UIKIT_EXTERN//简单来说，就是将函数修饰为兼容以往C编译方式�
 
 #pragma mark UIWindow
 
-    /*
-     UI的窗口类，用于显示界面，一般由一个应用至少要有一个window
-     iOS中的空间都是矩形，决定一个空间的位置以及大小，用结构体CGRect
-     CGPoint, 结构体, 用来存储x, y轴坐标
-     CGSize, 结构体, 用于存储宽度和高度
-     CGRect, 结构体, 用于存储矩形的位置和大小
-     */
-    
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];//建立屏幕（UIScreen）等大的window
-    self.window.backgroundColor = [UIColor whiteColor];
-    [self.window makeKeyAndVisible];//让window 显示在屏幕上
+/*
+ UI的窗口类，用于显示界面，一般由一个应用至少要有一个window
+ iOS中的空间都是矩形，决定一个空间的位置以及大小，用结构体CGRect
+ CGPoint, 结构体, 用来存储x, y轴坐标
+ CGSize, 结构体, 用于存储宽度和高度
+ CGRect, 结构体, 用于存储矩形的位置和大小
+ */
+
+self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];//建立屏幕（UIScreen）等大的window
+self.window.backgroundColor = [UIColor whiteColor];
+[self.window makeKeyAndVisible];//让window 显示在屏幕上
 
 #pragma mark- UIView
 
@@ -45,14 +45,14 @@ CGRect rc = [self.view convertRect:btn.frame fromView:btn.superview];
 */
     
 #pragma mark 角半径 圆角属性
-    //设置角半径
-    CGFloat radius = CGRectGetWidth(aView.bounds) / 2.0;
-    aView.layer.cornerRadius = radius;
-    Button.layer.masksToBounds = YES;(圆角属性)
-    //funcButton.layer.masksToBounds = YES;//是否裁切视图 注意：设置此属性会造成离屏渲染，过度使用会产生性能问题。
+//设置角半径
+CGFloat radius = CGRectGetWidth(aView.bounds) / 2.0;
+aView.layer.cornerRadius = radius;
+Button.layer.masksToBounds = YES;(圆角属性)
+//funcButton.layer.masksToBounds = YES;//是否裁切视图 注意：设置此属性会造成离屏渲染，过度使用会产生性能问题。
 
 
-//添加圆角的方法（离屏渲染）
+//添加圆角的方法
 - (UIImage *)imageWithCornerRadius:(CGFloat)radius {
     CGRect rect = (CGRect){0.f, 0.f, self.size};
     UIGraphicsBeginImageContextWithOptions(self.size, NO, UIScreen.mainScreen.scale);CGContextAddPath(UIGraphicsGetCurrentContext(),
@@ -82,17 +82,16 @@ CGRect rc = [self.view convertRect:btn.frame fromView:btn.superview];
     
     
     /*
-     //把视图作为一个一维数组来看
+     把视图作为一个一维数组来看
      
-     //添加：
-     
-     //在指定的index 处插入子视图
+     添加：
+     在指定的index 处插入子视图
      self.window insertSubview:(UIView *) atIndex:(NSInteger)
      
-     //在指定视图上面添加子视图
+     在指定视图上面添加子视图
      self.window insertSubview:(UIView *) aboveSubview:(UIView *)
      
-     //在指定视图之下添加子视图
+     在指定视图之下添加子视图
       self.window insertSubview:(UIView *) belowSubview:(UIView *)
      
      */
